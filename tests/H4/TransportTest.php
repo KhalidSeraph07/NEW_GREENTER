@@ -5,6 +5,7 @@ namespace Tests\H4;
 use App\Boletas\Artifacts;
 use App\Boletas\Preparation;
 use App\Boletas\SummaryTransport;
+use App\Boletas\LocalSummarySimulator;
 use App\Models\DailySummary;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -137,6 +138,31 @@ final class TransportTest extends TestCase
         $this->assertSame('sim_accepted', $transport->poll($summary->id)->state);
         $this->assertSame(1, $this->job($summary->id)->send_attempts);
         $this->assertSame(2, $this->job($summary->id)->poll_attempts);
+    }
+
+    public function test_process_code_99_without_constancia_does_not_create_a_rejection(): void
+    {
+        $summary = $this->summary(); app(SummaryTransport::class)->send($summary->id);
+        $this->app->instance(LocalSummarySimulator::class, new class extends LocalSummarySimulator {
+            public function poll(string $ticket, string $scenario): array {
+                return ['simulated' => true, 'source' => 'H4_LOCAL_FAKE', 'ticket' => $ticket, 'statusCode' => '99'];
+            }
+        });
+        $this->assertSame('uncertain', app(SummaryTransport::class)->poll($summary->id, '99')->state);
+        $this->assertNull($summary->fresh()->result);
+        $this->assertNotEmpty(DB::table('h4_events')->where('summary_id', $summary->id)->where('kind', 'query_uncertain')->value('payload'));
+    }
+
+    public function test_external_transaction_and_unapproved_scenario_are_refused_before_attempt(): void
+    {
+        $summary = $this->summary();
+        DB::beginTransaction();
+        try {
+            try { app(SummaryTransport::class)->send($summary->id); $this->fail(); }
+            catch (\LogicException) { $this->assertSame(0, $this->job($summary->id)->send_attempts); }
+        } finally { DB::rollBack(); }
+        $this->expectException(ValidationException::class);
+        app(SummaryTransport::class)->send($summary->id, 'individual');
     }
 
     private function summary(): DailySummary

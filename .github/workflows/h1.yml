@@ -1,4 +1,4 @@
-name: H1 H2 y H3 ficticios sin SUNAT
+name: H1 H2 H3 y H4 ficticios sin SUNAT
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -21,7 +21,7 @@ jobs:
           sed -i "s/^H2_OPERATOR_PASSWORD=$/H2_OPERATOR_PASSWORD=$(openssl rand -hex 24)/" .env
           sed -i "s/^LOCAL_UID=.*/LOCAL_UID=$(id -u)/; s/^LOCAL_GID=.*/LOCAL_GID=$(id -g)/" .env
           docker compose config --quiet
-          mkdir -p storage/audit/h2 storage/audit/h3
+          mkdir -p storage/audit/h2 storage/audit/h3 storage/audit/h4
           docker compose build --pull --no-cache php postgres
           docker run --rm --user "$(id -u):$(id -g)" --network bridge \
             --mount "type=bind,source=$PWD,target=/workspace" --env COMPOSER_HOME=/tmp/composer \
@@ -45,11 +45,14 @@ jobs:
           docker compose run --rm php php artisan poc:invoice --database
           docker compose run --rm php php artisan h2:setup
           docker compose run --rm php php artisan h2:setup --testing
-          docker compose run --rm php vendor/bin/phpunit --testdox --log-junit storage/audit/h3/phpunit.xml
+          docker compose run --rm php php tests/h4-preservation.php before
+          docker compose run --rm php vendor/bin/phpunit --testdox --log-junit storage/audit/h4/phpunit.xml
           python3 - <<'PY'
           import json
           from pathlib import Path
           for path in sorted(Path('storage/audit/h3').glob('interruption-*.json')):
+              print(path.name, json.loads(path.read_text()))
+          for path in sorted(Path('storage/audit/h4').glob('interruption-*.json')):
               print(path.name, json.loads(path.read_text()))
           PY
       - name: Formulario, CSRF y simulación por HTTP local real
@@ -61,7 +64,8 @@ jobs:
             if curl -s -o /dev/null http://127.0.0.1:8180/; then break; fi
             sleep 1
           done
-          python3 tests/http-smoke.py --report storage/audit/h3/http-smoke.json
+          python3 tests/h4-http-smoke.py --output-dir storage/audit/h4/http-ci
+          docker compose run --rm php php tests/h4-preservation.php after
       - name: Estado y parada sin borrar volúmenes
         if: always()
         run: |
