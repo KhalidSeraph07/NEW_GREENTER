@@ -6,6 +6,8 @@ La [planificación H2](docs/08_H2_FACTURA_FICTICIA.md) registra tareas pequeñas
 
 [H3 ficticio](docs/09_H3_ROBUSTEZ_FICTICIA.md) incorpora reserva durable de intento, fallos simulados, reintentos seguros acotados, consulta del registro del simulador, reconciliación de solo lectura y alertas CLI. Conserva UI, numeración y XML H2. H3 quedó cerrado con observaciones por aprobación expresa sobre el commit `96b17e6`; PR #1 fusionado mediante merge commit. H4, comunicaciones reales y certificados/credenciales fiscales reales siguen sin autorización. Los comandos y evidencias actuales están en ese documento; los informes H2 siguientes conservan su contexto histórico.
 
+[H4: boleta y RC ficticios](docs/11_H4_VERTICAL_FICTICIA.md), con D-07 aprobada para V1: formulario mínimo en `/boletas`, XML/firma/ZIP privados, RC inmutable, ticket y consulta 98/0/99 simulados. Entregado en [PR #2 Draft](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/2), sin fusión ni cierre automáticos. Facturas H2/H3, dependencias y Compose conservados. H5 y toda comunicación/certificado/credencial fiscal real siguen sin autorización.
+
 Preparar/arrancar H2 en PowerShell, sin reinicializar ni borrar datos:
 
 ```powershell
