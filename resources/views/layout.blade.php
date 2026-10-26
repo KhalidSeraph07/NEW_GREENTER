@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Factura ficticia · H2</title>
+    <title>@yield('title', 'Factura ficticia · H2')</title>
     <style>
         body{font:16px/1.5 system-ui,sans-serif;background:#f4f6f8;color:#182533;margin:0}
         main{max-width:900px;margin:32px auto;padding:24px;background:white;border:1px solid #d6dee5;border-radius:12px}
@@ -17,8 +17,8 @@
     </style>
 </head>
 <body><main>
-    <p class="notice"><strong>H2 · Simulación local · Sin validez fiscal.</strong> No se envía a SUNAT.</p>
-    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a></nav>
+    <p class="notice"><strong>@yield('milestone', 'H2') · Simulación local · Sin validez fiscal.</strong> No se envía a SUNAT.</p>
+    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a><a href="{{ route('boletas.index') }}">Boletas / RC ficticios</a></nav>
     @if ($errors->any())
         <div class="errors" role="alert"><p>Revisa los datos:</p><ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
     @endif
