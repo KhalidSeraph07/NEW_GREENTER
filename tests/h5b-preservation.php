@@ -15,7 +15,7 @@ foreach (['emisor_h1', 'emisor_h2_test'] as $database) {
         'h5_notes', 'h5_outbox', 'h5_receipts', 'h5_events', 'h5b_notes', 'h5b_summaries', 'h5b_members', 'h5b_outbox', 'h5b_simulation_receipts', 'h5b_events'] as $table) {
         if (!Illuminate\Support\Facades\Schema::hasTable($table)) { continue; }
         foreach (Illuminate\Support\Facades\DB::table($table)->get() as $row) {
-            $id = $row->id ?? ($row->boleta_id ?? ($row->summary_id ?? ($row->note_id ?? $row->invoice_id)));
+            $id = $row->id ?? ($row->boleta_id ?? ($row->note_id ?? ($row->summary_id ?? $row->invoice_id)));
             $snapshot['rows'][$database][$table][$id] = hash('sha256', json_encode($row, JSON_THROW_ON_ERROR));
         }
     }
