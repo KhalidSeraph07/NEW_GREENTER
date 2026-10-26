@@ -8,6 +8,8 @@ La [planificación H2](docs/08_H2_FACTURA_FICTICIA.md) registra tareas pequeñas
 
 [H4: boleta y RC ficticios](docs/11_H4_VERTICAL_FICTICIA.md), con D-07 aprobada para V1: formulario mínimo en `/boletas`, XML/firma/ZIP privados, RC inmutable, ticket y consulta 98/0/99 simulados. Cerrado con observaciones por aprobación expresa; [PR #2](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/2) marcado Ready for Review y fusionado mediante merge commit `6e6366336d211f0b527159ef9a94e2a0f7a59dea`. Facturas H2/H3, dependencias y Compose conservados. Corrección de RC rechazados pendiente de etapa expresamente autorizada antes de habilitar ese flujo real. H5 y toda comunicación/identidad/credencial fiscal real siguen sin autorización.
 
+[H5-A: notas de factura ficticias](docs/13_H5A_NOTAS_FACTURA_FICTICIAS.md), con recorte D-02/AF-06 aprobado: NC 07/01 completa y ND 08/02 por incremento, referencia congelada, XML/firma/ZIP privados y transporte/recuperación ficticios. UI mínima `/invoice-notes`; [PR #3 Draft](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/3), sin fusión ni cierre automáticos. Una nota por original incluso rechazada/incierta. H5-B (boletas/RC nuevos), H6 y toda actividad fiscal real no autorizados. El informe incluye comandos, pruebas y responsables/puertas pendientes; la RS 165-2021 derogó solo el último párrafo del artículo 22.3.
+
 Preparar/arrancar H2 en PowerShell, sin reinicializar ni borrar datos:
 
 ```powershell
