@@ -1,8 +1,8 @@
 # Plan de trabajo y puertas de calidad — H0, versión 0.3
 
-**Actualización de ejecución 25/10/2026:** el propietario cerró H1 con observaciones y autorizó H2 exclusivamente ficticio, progresivo y sin SUNAT/Beta. [Tareas, dependencias y aceptación H2](08_H2_FACTURA_FICTICIA.md). El resto de este plan conserva su referencia histórica; H2 no está cerrado y H3 no autorizado.
+**Actualización de ejecución 25/10/2026:** el propietario cerró H1 con observaciones y autorizó H2 exclusivamente ficticio, progresivo y sin SUNAT/Beta. CI remoto exitoso acreditado para `2c46f4834e75faa5e128f97ef3f8244b5295deaf`, run `40252416751`. [Tareas, evidencia y cierre formal H2, con observaciones asignadas a H3/H6/H7](08_H2_FACTURA_FICTICIA.md). El propietario aprobó posteriormente el cierre formal H2 con observaciones y autorizó H3 exclusivamente ficticio. H4 y comunicaciones reales con SUNAT no autorizados. El resto de este plan conserva su referencia histórica.
 
-**Planificación H0 v0.3 del 24/10/2026. Estado actualizado el 25/10/2026:** H0 cerrado por aprobación expresa del propietario y H1 autorizado por separado, solo POC técnica ficticia local. H2 exige nueva autorización. Fuente: Plan Maestro §§5–8 y acta de cierre. Las situaciones y puertas siguientes son la planificación aprobada; no acreditan validaciones posteriores.
+**Referencia histórica de planificación H0 v0.3 del 24/10/2026 y cierre H0 del 25/10/2026:** entonces se cerró H0 y se autorizó por separado H1 ficticio local; H2 aún exigía autorización posterior, ya otorgada según la actualización anterior. Fuente: Plan Maestro §§5–8 y acta de cierre. Las situaciones y puertas siguientes son la planificación aprobada; no acreditan validaciones posteriores.
 
 La [adenda confirmada por el propietario](../DOCS_GREENTER/ADENDA_H0_MODELO_OPERATIVO.md) sustituye el modelo compartido por instalación independiente administrada y ajusta la puerta: H0 documenta V1 propuesta, responsabilidades y pendientes con límite; dictamen PSE, elegibilidad y validaciones reales se exigen antes de prestar actividades reguladas/piloto real, y AF-04 antes de activar el flujo real afectado. No son requisitos de una POC H1 ficticia. **Registrar este ajuste no aprueba H0 ni autoriza H1.**
 
@@ -36,7 +36,7 @@ No saltar a H4 con una boleta que solo genera XML, ni a H8 porque pasó CI. La p
 
 ## Entregables propuestos por cambio revisable
 
-No se abrieron PRs: el directorio actual no es un repositorio Git. Los siguientes paquetes son planificación para cambios futuros, no ramas ni tareas despachadas.
+Al preparar H0 no existía repositorio Git ni se abrieron PRs. Actualmente `main` sigue `origin/main` en `KhalidSeraph07/NEW_GREENTER`; los siguientes paquetes conservan su carácter de planificación, no acreditan ramas, PRs ni tareas despachadas.
 
 | Paquete futuro | Alcance y archivos/módulos previstos | Evidencia mínima | Exclusión |
 |---|---|---|---|
@@ -94,7 +94,7 @@ Conservar documentos y facilitar acceso al receptor son parte del producto. Prov
 | Motivos/códigos NC/ND y excepciones excluidas | Antes de H5; aprobar exclusiones comerciales en H0 | No exigir todos los catálogos/casos para instalar entorno. Una necesidad que cambie V1 requiere decisión del propietario. |
 | Hosting definitivo, capacidad, presupuesto operativo, RPO/RTO y respaldo comercial | Antes de contratar/comprometer costos o desplegar; validar recuperación en H7, antes de H8 | No bloquean por sí solos H1 ficticio. No asignar cantidades ni contratar servicios preventivamente. |
 
-La tabla aplica el ajuste de puerta de la adenda: el pendiente fiscal/operativo del cliente real no se confunde con el permiso de POC. **El 25/10/2026 se aprobó H0 y autorizó exclusivamente H1 ficticio local**, sin servicios SUNAT/Beta ni datos, certificados o VPS reales. H2 permanece sin autorización.
+La tabla aplica el ajuste de puerta de la adenda: el pendiente fiscal/operativo del cliente real no se confunde con el permiso de POC. **El 25/10/2026 se aprobó H0 y se autorizó H1 ficticio local; posteriormente se cerró H1 y se autorizó H2 ficticio**, sin servicios SUNAT/Beta ni datos, certificados o VPS reales. H2 quedó cerrado con observaciones por decisión expresa posterior; H3 autorizado solo para pruebas ficticias, sin permiso H4 ni servicios SUNAT.
 
 ## Puerta de salida H0
 
@@ -105,4 +105,4 @@ La tabla aplica el ajuste de puerta de la adenda: el pendiente fiscal/operativo 
 - Riesgos con tratamiento y compromisos de custodia/retención reconocidos; los costos concretos se aprueban antes de contraerlos, con justificación.
 - Registro de cierre con versión y fecha. **La autorización para H1 es una decisión separada y explícita.**
 
-Estado actual: **H0 v0.3 cerrado; H1 ficticio local autorizado; H2 no autorizado.** Las pruebas técnicas se registran en H1; las evidencias históricas de H0 no se convierten en pruebas ejecutadas ni en aceptación fiscal.
+Estado actual: **H0 v0.3 y H1 cerrados; primera vertical H2 ficticia cerrada con observaciones; H3 autorizado exclusivamente ficticio; H4 y comunicaciones reales no autorizados.** Las pruebas técnicas y el CI remoto se registran en H1/H2; las evidencias históricas de H0 no se convierten en pruebas ejecutadas ni en aceptación fiscal.
