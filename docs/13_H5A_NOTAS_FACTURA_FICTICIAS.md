@@ -1,6 +1,6 @@
 # H5-A — NC 01 y ND 02 de factura, exclusivamente ficticias
 
-Autorización expresa del propietario, 26/10/2026. [D-02/AF-06, exclusiones y reservas fiscales](12_H5_PREPARACION_FISCAL.md). H5-A abierto, rama/PR Draft; no fusionar ni iniciar H5-B/H6 sin aprobación. Sin SUNAT/Beta/producción ni identidades, credenciales o certificados fiscales reales.
+**H5-A cerrado formalmente con observaciones por aprobación expresa del propietario, Decisión 1 del 26/10/2026.** Decisión 2 autoriza la fusión del PR #3 mediante merge commit. [D-02/AF-06, exclusiones y reservas fiscales](12_H5_PREPARACION_FISCAL.md). **H5-A cerrado no significa H5 completo.** H5-B (notas sobre boletas y nuevos RC) y H6 no autorizados. Sin SUNAT/Beta/producción ni identidades, credenciales o certificados fiscales reales.
 
 | Entrega | Dependencia | Criterio verificable |
 |---|---|---|
@@ -13,9 +13,9 @@ Se reutiliza el cálculo entero H2 sin alterarlo, Greenter instalado y los patro
 
 Primera entrega: una nota persistida por original, incluso rechazada/incierta; ningún rechazo libera automáticamente la referencia. Replay devuelve la misma nota; rollback previo al commit no consume identidad ni reserva. Otorgamiento se declara explícitamente **ficticio** en la nota, sin reescribir históricos. No acredita entrega real H6. No hay bajas, correcciones RC, parciales, otros motivos, notas de boleta ni nuevos RC.
 
-## Evidencia de la entrega para revisión
+## Evidencia de la vertical aceptada
 
-Código [`1f52c3883fe77f517f123eb6dd48ac526f1a6903`](https://github.com/KhalidSeraph07/NEW_GREENTER/commit/1f52c3883fe77f517f123eb6dd48ac526f1a6903), publicado en [PR #3 Draft](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/3), sin fusión. CI remoto [push 40400927324](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40400927324) y [PR 40400933773](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40400933773): ambos success. Log remoto examinado: **163 pruebas / 1.022 aserciones**, H2 33/168 + H3 30/218 + H4 43/347 + H5-A **57/289**; H1 separado 26 comprobaciones, HTTP real loopback 13 H2 + 17 H4 + 18 H5-A, todas verdaderas. Los dos controles de preservación remotos pasan. El CI instala/audita el lock existente, sin cambios de dependencias ni nuevo escaneo Trivy.
+Código [`1f52c3883fe77f517f123eb6dd48ac526f1a6903`](https://github.com/KhalidSeraph07/NEW_GREENTER/commit/1f52c3883fe77f517f123eb6dd48ac526f1a6903), integrado por [PR #3](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/3), posteriormente aceptado y fusionado. CI remoto de ese commit [push 40400927324](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40400927324) y [PR 40400933773](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40400933773): ambos success. Log remoto examinado: **163 pruebas / 1.022 aserciones**, H2 33/168 + H3 30/218 + H4 43/347 + H5-A **57/289**; H1 separado 26 comprobaciones, HTTP real loopback 13 H2 + 17 H4 + 18 H5-A, todas verdaderas. Los dos controles de preservación remotos pasan. El CI instala/audita el lock existente, sin cambios de dependencias ni nuevo escaneo Trivy.
 
 Local: [suite propia H5-A](../storage/audit/h5a/h5a-verified.xml) 57/289 aprobada, [H1](../storage/audit/h5a/h1-regression/result.json) 26 comprobaciones y [recorrido HTTP](../storage/audit/h5a/http-verified.log) 48 controles aprobados. Regresión completa local **163 pruebas / 1.022 aserciones, cero errores/fallos**, en [JUnit](../storage/audit/h5a/full-suite-verified.xml), [log](../storage/audit/h5a/full-suite-verified.log) y [resumen](../storage/audit/h5a/result.json); no se usa una corrida intermedia como evidencia de éxito.
 
@@ -58,4 +58,12 @@ docker compose run --rm php php tests/h5-preservation.php after
 - **Producto/técnico H6; operación/seguridad H7:** otorgamiento ficticio no acredita entrega/consulta real, autenticación sigue local; retención/huérfanos, custodia, respaldo/restauración y roles SQL de producción pendientes. Bloqueo durante firma/capacidad corresponde a H7; no se promete rendimiento.
 - **Distribución:** aclaración/avisos XMldsig antes de distribución comercial. Graphify actualizado por AST, sin llamadas a modelos; persiste aviso de versiones skill/CLI, sin actualizar herramientas globales.
 
-**H5-A entregado para revisión, no cerrado. PR Draft sin fusionar. Solicitar revisión del propietario antes de H5-B; H5-B, H6 y comunicaciones/identidades/certificados/credenciales fiscales reales siguen sin autorización.**
+## Registro de cierre y fusión
+
+El propietario aprobó expresamente H5-A con observaciones sobre `b0e8cd23495b90779b62446e0f007a91f6f38f91`. Antes de fusionar se revalidaron ese HEAD exacto, [CI Push 40402502632](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40402502632) y [CI Pull Request 40402509282](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40402509282) completed/success, checks aprobados, ausencia de conflictos (mergeable/clean) y árbol local limpio. El cierre se registró primero en el PR, sin modificar el commit revisado.
+
+PR #3 marcado Ready for Review y fusionado mediante [merge commit `4aef63653cc5ed3a46cf19f9362156451bfce1df`](https://github.com/KhalidSeraph07/NEW_GREENTER/commit/4aef63653cc5ed3a46cf19f9362156451bfce1df), sin squash ni rebase. Padres: `f6d298c6858c0207bdc8c7d6988f994349354b81` y el HEAD aprobado. Se comprobó que el árbol del merge coincide exactamente con el aprobado; los Markdown de estado se actualizan en un commit exclusivamente documental posterior. Sin cambios funcionales, de dependencias o infraestructura ni operaciones sobre BD/evidencias locales durante este cierre.
+
+CI del merge: [ejecución 40403645385](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40403645385). El CI del commit documental posterior se identifica por su SHA en GitHub Actions; ambos resultados se verifican antes del informe final. Se conservan íntegramente responsables y puertas de la sección anterior; el cierre no acredita resolución de corrección/reemisión, validación fiscal real, seguridad/operación ni licencia.
+
+**H5-A cerrado formalmente con observaciones. H5 incompleto. H5-B (notas sobre boletas y nuevos RC), H6, comunicaciones SUNAT/Beta/producción e identidades/certificados/credenciales fiscales reales no autorizados.**

@@ -1,8 +1,8 @@
 # H5 — Recorte NC/ND aprobado; H5-A solo factura ficticia
 
-Implementación y evidencias de H5-A: [entrega ficticia para revisión](13_H5A_NOTAS_FACTURA_FICTICIAS.md). H5-B permanece sin autorización.
+Implementación y evidencias de H5-A: [vertical ficticia cerrada con observaciones](13_H5A_NOTAS_FACTURA_FICTICIAS.md). H5-B permanece sin autorización.
 
-Corte: **26/10/2026, America/Lima**. H4 cerrado. Decisiones posteriores: **recorte NC 01/ND 02 aprobado; implementación H5-A autorizada exclusivamente sobre facturas ficticias**, en rama/PR Draft. H5-B, H6 y comunicaciones fiscales reales no autorizados. SEE del contribuyente previsto, condicionado a elegibilidad/PSE. D-02 y AF-06 registran la aprobación del recorte; no acreditan validación fiscal de un emisor real.
+Corte: **26/10/2026, America/Lima**. H4 cerrado. Decisiones posteriores: **recorte NC 01/ND 02 aprobado; H5-A sobre facturas ficticias cerrado formalmente con observaciones y PR #3 fusionado por aprobación expresa**. H5 permanece incompleto. H5-B, H6 y comunicaciones fiscales reales no autorizados. SEE del contribuyente previsto, condicionado a elegibilidad/PSE. D-02 y AF-06 registran la aprobación del recorte; no acreditan validación fiscal de un emisor real.
 
 **Recomendación:** comenzar con **NC tipo 07/motivo 01 (anulación de la operación)** y **ND tipo 08/motivo 02 (aumento en el valor)**, sobre una factura y después sobre una boleta, en entregas separadas. Un comprobante original local por nota, un ítem, PEN, contado e IGV común del ensayo. Son límites del producto aprobados, no una lista de todo lo permitido por SUNAT. Los motivos restantes quedan deshabilitados, sin motor genérico de ajustes.
 
@@ -47,7 +47,7 @@ Los catálogos 09/10 del libro [R1] contienen los códigos siguientes. **Publica
 
 Revalidado el libro del 26/08/2026: **855.113 bytes**, SHA-256 `cb5e871cfe3b81abea7faf25b156e5d35b21e8c4837979350919926612da73b6`, idéntico a [la copia existente](evidencias/SUNAT_Reglas_validacion_2026-08-26.xlsx). Localizadores: `Catálogos` A133:B145/A150:B155; NC/ND filas 5–8 (UBL **2.1**, estructura **2.0**, aunque la hoja se llame `2_0`), referencias NC 89–141/ND 89–119; RC 49–57. Control de Cambios 531–539/562–563 contiene reglas futuras de referencia única y controles de montos: **no declararlas vigentes en 2026**. La propuesta de una referencia y límites exactos es un control propio. RC mantiene UBL 2.0/estructura 1.1. [R8] posterga los cambios generales al 01/01/2027; revalidar antes de implementar/liberar, sin adelantar obligaciones futuras.
 
-- **Propietario:** aprobó motivos/exclusiones y autorizó solo H5-A ficticio. H5-B requiere nueva decisión después de revisar H5-A. AF-06 resuelve selección de motivos, no validación fiscal real ni entrega/custodia.
+- **Propietario:** aprobó motivos/exclusiones y posteriormente el cierre H5-A con observaciones y la fusión del PR #3. H5-B requiere nueva decisión expresa; H5 no está completo. AF-06 resuelve selección de motivos, no validación fiscal real ni entrega/custodia.
 - **Profesional fiscal + representante:** ratificar causal, IGV/ajustes y elegibilidad/SEE/PSE del emisor real antes de actividad afectada. Excepciones, otros conceptos y operaciones al crédito requieren revisión propia si se amplía alcance.
 - **Producto/técnico H6; operación/seguridad H7:** entrega/consulta del receptor, custodia/retención/restauración y acceso real siguen pendientes; no los resuelve el otorgamiento ficticio. Recuperación oficial sin ticket y corrección de RC rechazados conservan sus puertas previas al flujo real; licencia XMldsig antes de distribución.
 
