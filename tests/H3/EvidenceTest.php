@@ -7,12 +7,34 @@ use App\Invoices\InvoiceEvidence;
 use App\Invoices\SimulatedTransport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Tests\TestCase;
 
 final class EvidenceTest extends TestCase
 {
+    public function test_safe_retry_and_inflight_are_not_presented_as_uncertain_or_confirmed(): void
+    {
+        $invoice = $this->issue();
+        $transport = app(SimulatedTransport::class);
+        $transport->dispatch($invoice->id, 'communication_error');
+        $this->withBasicAuth($this->operator->email, $this->password);
+        foreach (['/', '/invoices/'.$invoice->id] as $url) {
+            $this->get($url)->assertOk()->assertSee('Reintento local seguro pendiente')->assertDontSee('Simulación incierta');
+        }
+        foreach ([2, 3] as $attempt) { $this->travel(11)->seconds(); $transport->dispatch($invoice->id, 'communication_error'); }
+        $this->get('/invoices/'.$invoice->id)->assertOk()->assertSee('Intentos locales agotados; requiere revisión')->assertSee('Sin CDR oficial');
+        $inflight = $this->issue();
+        Event::listen('h3.transport.claimed', fn () => throw new RuntimeException('Pausa de prueba tras reserva'));
+        try {
+            try { $transport->dispatch($inflight->id); } catch (RuntimeException) { /* Reserva conservada. */ }
+        } finally { Event::forget('h3.transport.claimed'); }
+        $this->assertSame('simulation_processing', $inflight->fresh()->transport_status);
+        $this->get('/invoices/'.$inflight->id)->assertOk()->assertSee('Simulación en curso; resultado pendiente')
+            ->assertDontSee('Aceptada en simulación')->assertSee('Sin CDR oficial');
+    }
+
     public function test_reconciliation_detects_missing_tampered_and_orphan_without_repair_or_deletion(): void
     {
         $invoice = $this->issue();
