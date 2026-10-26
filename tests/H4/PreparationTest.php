@@ -22,6 +22,18 @@ use ZipArchive;
 
 final class PreparationTest extends TestCase
 {
+    public function test_new_h4_creation_and_update_timestamps_preserve_the_utc_instant(): void
+    {
+        $instant = \Illuminate\Support\Carbon::parse('2026-10-25T01:00:00+00:00');
+        $this->travelTo($instant);
+        $receipt = $this->receipt(); $summary = $this->summary([$receipt->id]);
+        foreach (['h4_boletas' => $receipt->id, 'h4_summaries' => $summary->id] as $table => $id) {
+            $row = DB::table($table)->where('id', $id)->sole();
+            $this->assertSame($instant->timestamp, \Illuminate\Support\Carbon::parse($row->created_at)->timestamp);
+            $this->assertSame($instant->timestamp, \Illuminate\Support\Carbon::parse($row->updated_at)->timestamp);
+        }
+    }
+
     public function test_boleta_and_rc_have_independent_numbers_valid_signatures_and_exact_zip_bytes(): void
     {
         $invoiceCounter = DB::table('invoice_series')->value('next_number');

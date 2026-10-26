@@ -11,4 +11,5 @@ final class DailySummary extends Model
     protected $keyType = 'string';
     protected $guarded = [];
     protected $casts = ['snapshot' => 'array', 'artifacts' => 'array', 'result' => 'array'];
+    public function freshTimestamp() { return now('UTC'); }
 }

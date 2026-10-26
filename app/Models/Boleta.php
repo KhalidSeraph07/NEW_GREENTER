@@ -11,4 +11,5 @@ final class Boleta extends Model
     protected $keyType = 'string';
     protected $guarded = [];
     protected $casts = ['snapshot' => 'array', 'artifacts' => 'array', 'number' => 'integer'];
+    public function freshTimestamp() { return now('UTC'); }
 }
