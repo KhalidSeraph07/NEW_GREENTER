@@ -1,6 +1,6 @@
 # D-07 — Ruta de boletas aprobada para el diseño V1
 
-Corte: **25/10/2026, America/Lima**. Decisiones posteriores del propietario: D-07 aprobada para V1 y H4 autorizado exclusivamente como vertical ficticia, en rama/PR Draft sin fusión automática. H3 cerrado; H5 y comunicaciones SUNAT/Beta/producción no autorizados. Sin certificados ni credenciales fiscales reales.
+Corte: **25/10/2026, America/Lima**. Decisiones posteriores del propietario: D-07 aprobada para V1; [H4 ficticio cerrado con observaciones y PR #2 fusionado por aprobación expresa](11_H4_VERTICAL_FICTICIA.md). H5 y comunicaciones SUNAT/Beta/producción no autorizados. Sin RUC, certificados ni credenciales fiscales reales.
 
 **Recomendación:** **boleta → resumen diario RC → ticket → consulta → resultado correlacionado**, como única ruta V1 del **SEE del contribuyente directo previsto**, condicionado a D-03. Sin envío individual ni cambio automático de canal. Ruta única permite varios lotes inmutables del mismo día. Aprobada por el propietario para el diseño V1; ratificación fiscal/aplicabilidad real pendientes.
 
@@ -37,6 +37,6 @@ Reutilizar cálculos de ensayo, acceso/propiedad, archivos privados y firma H2; 
 
 Simular ticket, 98→aceptación/rechazo, consultas fallidas, respuestas incompletas/ajenas, duplicación, timeout y ticket perdido. **No reutilizar lookup H3 por UUID como recuperación oficial sin ticket.** Probar miembros únicos, lotes del mismo día, fechas mezcladas, D+7, interrupciones y concurrencia; regresiones H1–H3. Todo ficticio/sin CDR oficial. Solo altas: no notas, modificación/anulación ni habilitación fiscal real.
 
-**Puertas pendientes:** propietario ya aprobó D-07 y autorizó la vertical ficticia H4; cierre H4 requiere aprobación posterior. Fiscal ratifica ruta/casuística/vigencia; representante acredita elegibilidad/modalidad y RUC/series. PSE/D-03 y AF-04 bloquean actividad real afectada, no por sí solos el futuro ensayo ficticio. Antes de operar: contrato/XSD/firma/reglas, entrega/consulta del receptor (H4/H6), custodia/restauración/retención (H7) e incidentes efectivos validados.
+**Puertas pendientes:** el cierre ficticio H4 no resuelve la aplicabilidad real. Fiscal ratifica ruta/casuística/vigencia; representante acredita elegibilidad/modalidad y RUC/series. PSE/D-03 y AF-04 bloquean actividad real afectada. Antes de operar: contrato/XSD/firma/reglas, entrega/consulta del receptor (H6/H7), custodia/restauración/retención (H7) e incidentes efectivos validados. Técnico/orquestador + fiscal mantienen pendiente la corrección de RC rechazados para una etapa expresamente autorizada antes de habilitar ese flujo real.
 
-**Estado: D-07 aprobada para diseño V1; H4 ficticio autorizado, cierre pendiente. Alternativa individual documentada sin implementación. H5 y comunicaciones fiscales reales prohibidos.**
+**Estado: D-07 aprobada para diseño V1; H4 ficticio cerrado con observaciones por aprobación expresa. Alternativa individual documentada sin implementación. H5 y comunicaciones fiscales reales prohibidos.**
