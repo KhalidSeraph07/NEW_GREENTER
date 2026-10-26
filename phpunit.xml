@@ -3,6 +3,7 @@
     <testsuites>
         <testsuite name="H2 ficticio"><directory>tests/H2</directory></testsuite>
         <testsuite name="H3 ficticio"><directory>tests/H3</directory></testsuite>
+        <testsuite name="H4 ficticio"><directory>tests/H4</directory></testsuite>
     </testsuites>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
