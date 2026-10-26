@@ -28,4 +28,32 @@ El bloqueo de serie durante firma/escritura continúa; medir contención y justi
 
 ## Evidencia y estado
 
-Pendiente de ejecutar los cambios y sus pruebas. Este documento no declara H3 terminado.
+Pruebas locales: **62 pruebas, 372 aserciones, cero fallos/errores** en [JUnit combinado](../storage/audit/h3/phpunit.xml) y [log con nombres de casos](../storage/audit/h3/full-suite.log): regresión H2 33/168 sin modificar sus pruebas; H3 29/204. Incluye ocho procesos sincronizados por escenario de consulta/reintento, SIGKILL real antes del procesamiento, después del registro ficticio y antes del commit de emisión; respuesta tardía, fallo de persistencia final, límite de intentos, espera, hashes/identidad incongruentes, enlace simbólico, evidencia incompleta/alterada, consulta fallida y bloqueo activo de serie. Los JSON `storage/audit/h3/interruption-*.json` y `concurrency-*.json` registran PIDs, UUID, barreras y resultados sintéticos. No se simula un SIGKILL como si fuera pérdida física de energía.
+
+Regresión H1: [26 comprobaciones aprobadas](../storage/audit/h3/h1-regression/result.json), incluida firma independiente y negativos; [13 controles HTTP satisfactorios](../storage/audit/h3/http-smoke.json). H1 se ejecutó con un montaje separado: su `storage/app/h1/result.json` original conservó SHA256 `BFCF2616CF7905D71E487EA079FBB816AB7278D4E25B6BCE941BF3D6351B04BD`. Las firmas cambiantes de nuevas fixtures son esperadas; las evidencias preexistentes no se regeneraron.
+
+[Snapshot previo](../storage/audit/h3/preservation-before.json) y [comparación posterior](../storage/audit/h3/preservation-after.log): **60 facturas preexistentes** (1 en `emisor_h1`, 59 en `emisor_h2_test`) y **100 archivos preexistentes** conservaron valores/bytes. La suite agrega exclusivamente fixtures propias, sin fresh/truncate/borrado de volúmenes. La migración extiende restricciones de estados y añade columnas/tablas, sin borrar filas ni reinicializar; no se ejecutó reversión. Los snapshots prueban conservación del conjunto indicado, no backup/restauración integral.
+
+Medición observacional local con ocho emisores concurrentes: duración por proceso entre **2,804 y 19,903 segundos**, incluida espera y generación/firma; identidad y correlativos correctos. No es benchmark de producción ni acredita una carga sostenible. Se conserva la observación del bloqueo durante firma; cualquier rediseño requiere necesidad demostrada y nueva revisión. Reconciliar no elimina los huérfanos de prueba ni resuelve retención H7.
+
+Reproducción desde PowerShell, con imágenes/vendor existentes y el entorno local preparado (mismas versiones/lock H2, sin dependencias nuevas):
+
+```powershell
+New-Item -ItemType Directory -Force storage/audit/h3/h1-regression | Out-Null
+docker compose run --rm php php artisan h2:setup
+docker compose run --rm php php artisan h2:setup --testing
+docker compose run --rm php vendor/bin/phpunit --testdox --log-junit storage/audit/h3/phpunit.xml
+python tests/http-smoke.py --report storage/audit/h3/http-smoke.json
+$h3RegressionPath = (Resolve-Path -LiteralPath 'storage/audit/h3/h1-regression').Path
+docker compose run --rm --volume "${h3RegressionPath}:/workspace/storage/app/h1" php php artisan poc:invoice --database
+```
+
+Para una nueva comparación de preservación, ejecutar `docker compose run --rm php php tests/h3-preservation.php before` **antes** de pruebas y `... after` después. El modo before rechaza sobrescribir un snapshot existente; usar otra copia aislada para un ensayo nuevo y conservar los originales. Repetir pruebas genera nuevos datos y puede sustituir informes del directorio de destino: seleccionar destinos nuevos para conservar una corrida previa. No ejecutar consumo global de pendientes de la BD manual como prueba; las pruebas automatizadas seleccionan sus UUID propios.
+
+Operación ficticia: `h2:dispatch --scenario=communication_error` solo confirma no procesamiento en este simulador; timeout real/desconexión no justifican ese diagnóstico. `timeout` e `incomplete` conservan un resultado en `simulation_receipts` que solo `h3:recover <UUID>` puede recuperar; `uncertain` y `unexpected_error` quedan inciertos sin registro recuperable. Tres intentos máximos y esperas 5/10 segundos son política técnica del ensayo. No se reintenta rechazo, resultado terminal, ausencia en consulta ni incertidumbre. Una reserva no vencida no se recupera; la vencida se cerca para impedir que la confirmación tardía reemplace el estado recuperado.
+
+Registros: `invoice_transport_events` conserva UUID, token/intento, evento fijo, fecha UTC y atención requerida en la misma transacción del estado; nunca excepción cruda, claves ni credenciales. `h3:inspect` muestra hasta 100 inciertas/agotadas/reservas vencidas y su cantidad total; `--evidence` añade problemas de preparación y huérfanos. Los rechazos también quedan marcados con atención en el historial de eventos y en el historial H2. Salida 1 significa atención pendiente; salida 0 de una consulta no implica aceptación fiscal: un rechazo simulado resuelto también es terminal. No hay email, canales externos ni vigilancia automática autorizada.
+
+La suite detectó y corrigió el uso de hora local en las nuevas reservas (UTC ahora) y el seguimiento de directorios de evidencia enlazados. La prueba CLI usa Artisan directamente: no se añadió Mockery por una necesidad exclusiva del harness. Comparaciones del manifiesto comprueban hashes/tamaños estrictos por campo porque PostgreSQL JSONB reordena claves. No se cambiaron cálculos, serializador XML, dependencias, Compose ni controles H2 para acomodar pruebas.
+
+CI H3 y propuesta de cierre: pendientes de publicación/verificación de esta revisión. **H3 no se declara cerrado; H4 y servicios reales siguen sin autorización.**

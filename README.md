@@ -4,6 +4,8 @@
 
 La [planificación H2](docs/08_H2_FACTURA_FICTICIA.md) registra tareas pequeñas, dependencias, aceptación y evidencia. Implementación: operador ficticio con HTTP Basic, Blade mínimo con CSRF, un concepto/contado/PEN, cálculos enteros, correlativo bloqueado y outbox en una transacción PostgreSQL, XML/firma/ZIP privados, historial y transporte exclusivamente simulado. No hay módulo comercial ni conexión SUNAT/Beta.
 
+[H3 ficticio](docs/09_H3_ROBUSTEZ_FICTICIA.md) incorpora reserva durable de intento, fallos simulados, reintentos seguros acotados, consulta del registro del simulador, reconciliación de solo lectura y alertas CLI. Conserva UI, numeración y XML H2. H3 queda para revisión y aprobación expresa; H4 y comunicaciones reales siguen sin autorización. Los comandos y evidencias actuales están en ese documento; los informes H2 siguientes conservan su contexto histórico.
+
 Preparar/arrancar H2 en PowerShell, sin reinicializar ni borrar datos:
 
 ```powershell
@@ -15,12 +17,12 @@ docker compose up -d web
 
 Abrir [http://127.0.0.1:8180](http://127.0.0.1:8180). Usuario ficticio: `operador.h2@example.invalid`; contraseña local en `H2_OPERATOR_PASSWORD` de `.env` (no compartirla). La clave APP_KEY y contraseñas se generan solo si faltan y no se imprimen. En una copia nueva primero construir las imágenes e instalar dependencias desde el lock con los comandos de infraestructura más abajo. No ejecutar `down -v`, `migrate:fresh` ni sustituir el volumen existente.
 
-Pruebas reproducibles H2:
+Pruebas reproducibles H2/H3 (el segundo setup aplica migraciones aditivas a la BD de pruebas):
 
 ```powershell
 docker compose run --rm php php artisan h2:setup --testing
-docker compose run --rm php vendor/bin/phpunit --testdox --log-junit storage/audit/h2/phpunit.xml
-python tests/http-smoke.py
+docker compose run --rm php vendor/bin/phpunit --testdox --log-junit storage/audit/h3/phpunit.xml
+python tests/http-smoke.py --report storage/audit/h3/http-smoke.json
 ```
 
 PHPUnit 12.5.40 es dependencia **solo de desarrollo** (PHP 8.3 compatible, 25 paquetes dev); las 79 dependencias runtime H1 conservaron sus versiones. [Soporte del mantenedor](https://phpunit.de/supported-versions.html). PostgreSQL de pruebas: `emisor_h2_test`, separado del uso manual. Las pruebas no borran/resetan la base: agregan fixtures ficticias propias y usan números relativos; guardas bloquean su ejecución sobre otra base.
@@ -29,7 +31,7 @@ Evidencias: [JUnit](storage/audit/h2/phpunit.xml), [log PHPUnit](storage/audit/h
 
 El proceso web adicional reutiliza la misma imagen PHP: es necesario para el formulario y publica **solo 127.0.0.1:8180**. PostgreSQL no publica puertos. CLI/pruebas conservan red interna sin salida. El web añade una red normal para permitir acceso desde el navegador; **no tiene bloqueo físico total de salida**. La prohibición de SUNAT se implementa manteniendo únicamente transporte simulado, sin URL/credenciales/cliente real ni selector de modalidad. El servidor PHP y HTTP Basic por HTTP son solo desarrollo local; no constituyen despliegue apto para internet.
 
-Outbox: `h2:dispatch --limit=10 --scenario=accepted` procesa pendientes con respuestas locales; también admite `rejected` o `uncertain`. La incierta queda detenida y no se reintenta automáticamente. En la UI puede simularse una factura propia. Códigos SIM y estado fiscal siempre indican que **no hay envío ni CDR SUNAT**.
+Outbox: `h2:dispatch --limit=10 --scenario=accepted` procesa pendientes con respuestas locales; también admite `rejected` o `uncertain`, y los fallos H3 descritos en su documento. La incierta queda detenida y no se reintenta automáticamente. `h3:recover <UUID>` consulta solo el registro del simulador; `h3:inspect --evidence` informa incidentes/integridad sin borrar ni reenviar. En la UI puede simularse una factura propia con los tres escenarios H2. Códigos SIM y estado fiscal siempre indican que **no hay envío ni CDR SUNAT**.
 
 Límites explícitos: tasa 18% y redondeo half-up pertenecen al ensayo, sin ratificación fiscal real; un concepto, sin descuentos/operaciones especiales. El bloqueo de serie incluye firma y escritura local y limita concurrencia; no se promete capacidad. DB/archivos no son una transacción distribuida: fallo controlado antes de commit limpia solo archivos propios; si el commit puede haber ocurrido se conserva evidencia. Una caída abrupta puede dejar huérfanos privados; reconciliación/retención y resistencia a pérdida de energía siguen pendientes. Usuario SQL de la POC conserva privilegios de inicialización; no es el diseño de roles de producción. [Responsables, hitos y condiciones de resolución](docs/08_H2_FACTURA_FICTICIA.md#cierre-formal-de-h2-con-observaciones--25102026). H3 cuenta ahora con autorización separada exclusivamente ficticia; H4 y las comunicaciones reales con SUNAT siguen sin autorización.
 
