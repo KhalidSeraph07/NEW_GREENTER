@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php" colors="true" cacheDirectory="storage/framework/testing/phpunit-cache">
+    <testsuites><testsuite name="H2 ficticio"><directory>tests/H2</directory></testsuite></testsuites>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="DB_DATABASE" value="emisor_h2_test" force="true"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+    </php>
+</phpunit>

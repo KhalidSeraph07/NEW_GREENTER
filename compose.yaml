@@ -1,0 +1,58 @@
+name: emisor-h1
+
+services:
+  postgres:
+    build:
+      context: .
+      target: postgres
+    image: emisor-h1-postgres:local
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:?Definir DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME:?Definir DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Definir contraseña local DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [local]
+
+  php:
+    build:
+      context: .
+      target: php
+    image: emisor-h1-php:local
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    environment:
+      COMPOSER_HOME: /tmp/composer
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:mode=1777
+    volumes:
+      - .:/workspace:ro
+      - ./storage:/workspace/storage
+      - ./bootstrap/cache:/workspace/bootstrap/cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [local]
+
+  web:
+    extends:
+      service: php
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080", "--no-reload"]
+    ports:
+      - "127.0.0.1:${H2_HOST_PORT:-8180}:8080"
+    networks: [local, browser]
+
+volumes:
+  postgres_data:
+
+networks:
+  local:
+    internal: true
+  browser:

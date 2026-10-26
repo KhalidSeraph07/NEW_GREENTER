@@ -1,0 +1,63 @@
+name: H1 y H2 ficticios sin SUNAT
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  poc:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Preparar únicamente entorno ficticio local
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          sed -i "s/^DB_PASSWORD=$/DB_PASSWORD=$(openssl rand -hex 24)/" .env
+          sed -i "s|^APP_KEY=$|APP_KEY=base64:$(openssl rand -base64 32)|" .env
+          sed -i "s/^H2_OPERATOR_PASSWORD=$/H2_OPERATOR_PASSWORD=$(openssl rand -hex 24)/" .env
+          sed -i "s/^LOCAL_UID=.*/LOCAL_UID=$(id -u)/; s/^LOCAL_GID=.*/LOCAL_GID=$(id -g)/" .env
+          docker compose config --quiet
+          mkdir -p storage/audit/h2
+          docker compose build --pull --no-cache php postgres
+          docker run --rm --user "$(id -u):$(id -g)" --network bridge \
+            --mount "type=bind,source=$PWD,target=/workspace" --env COMPOSER_HOME=/tmp/composer \
+            emisor-h1-php:local composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+          docker run --rm --user "$(id -u):$(id -g)" --network bridge \
+            --mount "type=bind,source=$PWD,target=/workspace,readonly" --env COMPOSER_HOME=/tmp/composer \
+            emisor-h1-php:local composer audit --locked --no-interaction
+      - name: Validar dependencias, XML, firma y PostgreSQL sin salida externa
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose run --rm --no-deps php composer validate --strict
+          docker compose run --rm --no-deps php composer check-platform-reqs
+          docker run --rm --network none --read-only \
+            --tmpfs /tmp --tmpfs /var/run/postgresql:uid=70,gid=70 \
+            --tmpfs /var/lib/postgresql/data:uid=70,gid=70,mode=700 \
+            --env POSTGRES_PASSWORD=H1-FICTICIO-SIN-SECRETO \
+            --mount "type=bind,source=$PWD/tests,target=/tests,readonly" \
+            --entrypoint sh emisor-h1-postgres:local /tests/postgres-fresh.sh
+          docker compose up -d --wait postgres
+          docker compose run --rm php php artisan poc:invoice --database
+          docker compose run --rm php php artisan h2:setup
+          docker compose run --rm php php artisan h2:setup --testing
+          docker compose run --rm php vendor/bin/phpunit --log-junit storage/audit/h2/phpunit.xml
+      - name: Formulario, CSRF y simulación por HTTP local real
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose up -d web
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null http://127.0.0.1:8180/; then break; fi
+            sleep 1
+          done
+          python3 tests/http-smoke.py
+      - name: Estado y parada sin borrar volúmenes
+        if: always()
+        run: |
+          docker compose ps
+          docker compose down

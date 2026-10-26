@@ -1,0 +1,130 @@
+# Matriz fiscal — H0, versión 0.3
+
+Fecha de consulta y corte de esta revisión: **24 de octubre de 2026, America/Lima**. Estado: **revisión documental inicial; pendiente de aprobación fiscal competente y del perfil del piloto**. Sistema investigado: SEE del contribuyente. No se ha emitido, firmado ni enviado ningún documento.
+
+## Cómo interpretar esta matriz
+
+- **C — Confirmado documentalmente:** la fuente oficial consultada respalda la afirmación dentro del ámbito señalado. No acredita elegibilidad de una empresa concreta, implementación correcta ni aceptación en producción.
+- **P — Pendiente:** falta confirmar aplicabilidad, consolidación normativa, detalle técnico o procedimiento. No convertirlo en una validación automática.
+- **PROPUESTA:** recorte o control del producto sujeto a aprobación; no es una obligación impuesta por SUNAT.
+
+Se consultaron resoluciones, orientación y manuales oficiales. Las resoluciones y sus modificatorias prevalecen sobre ejemplos antiguos de orientación. La búsqueda no certifica exhaustividad de toda la legislación vigente. Según la [adenda confirmada](../DOCS_GREENTER/ADENDA_H0_MODELO_OPERATIVO.md), H0 registra V1 propuesta, responsables, límites y pendientes; el profesional competente valida tributación/PSE y el representante acredita emisor/modalidad antes de operación real. Antes de implementar cada flujo se revalidará su paquete normativo y técnico. No se da por aprobada fiscalmente una instalación por aprobar su modelo comercial.
+
+## Fuentes y localizadores de evidencia
+
+Todas las fuentes siguientes se consultaron el **24/10/2026**. Las páginas de orientación pueden cambiar sin una versión descargable. Los números de página de PDF son los del visor, empezando en 1. En v0.2 se conserva una copia íntegra del libro oficial de validaciones F23 con huella SHA-256; los PDF se consultaron en línea.
+
+| ID | Fuente oficial y localizador utilizado | Fecha/versión y límite de la evidencia |
+|---|---|---|
+| F01 | [SUNAT: SEE del contribuyente](https://cpe.sunat.gob.pe/sistema_emision/see_contribuyente), apartados requisitos, otorgamiento, conservación y operatividad | Página indica modificación 30/05/2025. Orientación; contiene también afirmaciones sobre notas que requieren contraste. |
+| F02 | [RS 000003-2023/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2023/000003-2023.pdf), art. 3, numeral 12.1.c; disposición final y transitoria, pp. 2–5 | Resolución de 04/01/2023; vigencia al día siguiente de publicación y disposición transitoria para facturas de la fecha de publicación. Plazo corroborado en F01. |
+| F03 | [RS 114-2019/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2019/114-2019.pdf), art. 2: 2.5, 2.6 y 2.7, pp. 7–10 | Resolución de 27/05/2019; modifica bajas, otorgamiento y resumen. No usar su antiguo plazo de factura, sustituido posteriormente. |
+| F04 | [RS 206-2019/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2019/206-2019.pdf), sexta disposición complementaria modificatoria, 6.1 y 6.2, pp. 41–43 | Documenta alternativa de envío individual de boletas. Su relación con la cadena posterior debe consolidarse antes de habilitar esa alternativa. |
+| F05 | [SUNAT: boleta electrónica](https://cpe.sunat.gob.pe/tipos_de_comprobantes/boleta), sección «Desde los Sistemas del Contribuyente» | Página indica modificación 25/09/2025. No trasladar las restricciones de la sección SOL a este sistema. |
+| F06 | [SUNAT: nota de crédito](https://cpe.sunat.gob.pe/tipos_de_comprobantes/nota_de_credito), sección del contribuyente | Página indica modificación 25/09/2025. Relación documental confirmada; plazo excepcional necesita revisión. |
+| F07 | [SUNAT: nota de débito](https://cpe.sunat.gob.pe/tipos_de_comprobantes/nota_de_debito), sección del contribuyente | Página indica modificación 25/09/2025. Tiene referencias a nota de crédito y correcciones que no se adoptan como regla de débito. |
+| F08 | [RCP, capítulo III](https://www.sunat.gob.pe/legislacion/comprob/regla/capituloIII.pdf), art. 10, pp. 31–34 | Texto con modificatorias y textos anteriores diferenciados. Leer la disposición aplicable, no el texto histórico contiguo. |
+| F09 | [Manual del programador SEE del contribuyente](https://cpe.sunat.gob.pe/sites/default/files/inline-files/manual_programador%20%281%29.pdf), §§2.3–2.8 y 3, pp. 14–27 | Mayo de 2021. Métodos y recuperación documentados; no acredita disponibilidad actual ni habilita algoritmos criptográficos antiguos sin revisión. |
+| F10 | [Servicios web publicados por SUNAT](https://cpe.sunat.gob.pe/sites/default/files/2026-05/Descarga%20aqu%C3%AD%20los%20Servicios%20WEB%20Disponibles%20-%20Incluye%20DDJJ%20de%20Boletos%20a%C3%A9reos.pdf), pp. 1–2 | Archivo ubicado en publicación 2026-05; fecha interna no visible. Distingue Beta, producción y consultas. No se invocaron los servicios. |
+| F11 | [SUNAT: guías y manuales](https://cpe.sunat.gob.pe/guias-y-manuales), reglas CPE, XSD/XSL, anexos y guías | Portal anuncia reglas actualizadas al **26/08/2026**. En v0.2 el enlace se obtuvo desde el navegador y el archivo se descargó directamente de SUNAT: F23. La fecha general de modificación del portal no sustituye la versión del archivo ni la vigencia de cada regla. |
+| F12 | [SUNAT: concepto, tasa y operaciones gravadas IGV](https://orientacion.sunat.gob.pe/3053-concepto-tasa-y-operaciones-gravadas-igv-empresas), tabla anual | En 2026 muestra total general 18 %, compuesto por IGV 15,5 % e IPM 2,5 %, por Ley 32387. No establece el tratamiento de cada operación del piloto. |
+| F13 | [Código Tributario, libro segundo](https://www.sunat.gob.pe/legislacion/codigo/libro2/libro.pdf), art. 87.7, pp. 42–43 | Texto incluye obligación de conservar por cinco años o prescripción, el mayor, y regla de cómputo. No equivale a cinco años desde la emisión. |
+| F14 | [SUNAT: PSE](https://cpe.sunat.gob.pe/aliados/pse), concepto y registro | Página indica modificación 27/10/2025. Su mención de homologación está desactualizada frente a F22; no se adopta ese requisito. |
+| F15 | [Informe 161-2019-SUNAT/7T0000](https://www.sunat.gob.pe/legislacion/oficios/2019/informe-oficios/i161-2019-7T0000.pdf), análisis §2 y conclusión 2, pp. 3–6 | 30/10/2019. Emisión encargada a terceros y uso de certificado/credenciales del PSE. No resuelve por sí solo la calificación del modelo comercial todavía no definido. |
+| F16 | [RS 000075-2026/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2026/000075-2026.pdf), arts. 1, 3–5 y disposición final | 29/04/2026; vigencia 01/06/2026. Cambia designación de emisores y obligaciones SIRE; revisar situación concreta. No incorpora SIRE al producto. |
+| F17 | [RS 000108-2026/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2026/000108-2026.pdf), objeto y modificaciones GRE | 29/05/2026. Actualización localizada relativa al traslado y GRE; no justifica ampliar V1 a guías. |
+| F18 | [RS 000193-2020/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2020/193-2020.pdf), art. 3 y anexos referidos | 05/11/2020. Añade información de pago y ajustes relacionados. Su plazo antiguo de envío de factura está sustituido por F02. |
+| F19 | [RS 097-2012/SUNAT, original](https://www.sunat.gob.pe/legislacion/superin/2012/097-2012.pdf) y [índice normativo SUNAT](https://cpe.sunat.gob.pe/informacion_general/normas_legales) | PDF original escaneado sin texto recuperable en la herramienta. No se trató como texto consolidado vigente ni se afirmó haber inspeccionado íntegramente sus 26 páginas. |
+| F20 | [SUNAT: resumen diario de boletas](https://orientacion.sunat.gob.pe/04-resumen-diario-boleta-de-venta-electronica), apartado principal | Orientación que corrobora el plazo y respuesta del resumen de F03. |
+| F21 | [RS 199-2015/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2015/199-2015.pdf), arts. 1, 3 y 5, especialmente p. 5 | Marco PSE: actividades en nombre del emisor, identidad de quien presta el servicio y permanencia de responsabilidad del emisor. Leer con modificatorias, en particular F22. |
+| F22 | [RS 000108-2022/SUNAT](https://www.sunat.gob.pe/legislacion/superin/2022/108-2022.pdf), artículo único y disposiciones derogatorias, pp. 2–3 | Elimina homologación como condición de inscripción PSE al derogar art. 5.e; modifica registro de certificado y acreditación ISO/IEC-27001, entre otros aspectos. No elimina registro ni las demás condiciones aplicables. |
+| F23 | [Libro oficial CPE del 26/08/2026](https://cpe.sunat.gob.pe/sites/default/files/2026-08/Reglas%20de%20validaci%C3%B3n%20-%20actualizado%20al%2026.08.2026.xlsx), [copia de evidencia](evidencias/SUNAT_Reglas_validacion_2026-08-26.xlsx) | Descargado e inspeccionado en solo lectura: 855 113 bytes, 23 hojas. SHA-256: `cb5e871cfe3b81abea7faf25b156e5d35b21e8c4837979350919926612da73b6`. Alcance y celdas revisadas debajo; no se validó todo el contenido ni se ejecutó el validador SUNAT. |
+
+## Encuadre PSE de la instalación independiente administrada
+
+**Conclusión documental:** F21 art. 3 incluye emisión, envío, generación/envío de resúmenes y bajas y recepción de CDR cuando se prestan en nombre del emisor; su segundo párrafo se refiere al certificado y/o credenciales propios del tercero. F15 interpreta la emisión encargada a terceros dentro del marco PSE. Por tanto, **instalación separada y certificados individuales no acreditan por sí solos exención PSE**. Registrar el certificado u obtener habilitación técnica tampoco acredita por sí solo la licitud de la prestación administrada.
+
+**Aplicación al proyecto — inferencia pendiente de dictamen:** la adenda define proveedor que administra VPS, custodia técnicamente secretos y opera software de generación, firma, envío y recepción; el cliente confirma operaciones y decisiones tributarias. Ese reparto ya está documentado en su §2; falta el dictamen competente sobre su grado de actuación en nombre del emisor. No se afirma que todo alojamiento sea PSE ni que confirmar un botón convierta al proveedor en ajeno a las actividades. SEE del contribuyente y certificado/credenciales del cliente son la vía propuesta, condicionada a su procedencia legal.
+
+El profesional competente debe emitir conclusión sobre ese reparto y el representante confirmar elegibilidad/modalidad. Si el dictamen exige PSE propio, un PSE contratado o modificar actividades/certificados, se presenta al propietario la decisión con costos e impacto antes de comprometer la integración o prestar las actividades reguladas. **No hay dictamen, contratación ni autorización de emisión real.** Esta reserva no bloquea por sí sola una POC H1 ficticia; sí bloquea prestación real y liberación H8 mientras corresponda. F22 corrige la referencia antigua a homologación, sin eliminar las condiciones restantes de inscripción.
+
+## Revisión acotada del archivo oficial de 2026
+
+Se inspeccionaron estructura y celdas relevantes de `General ` (el nombre incluye un espacio final), `Firma`, comprobantes V1, resumen, baja, códigos de retorno, parámetros y control de cambios. Se leyeron condiciones y códigos originales; no se recalcularon ni modificaron fórmulas del libro. Es revisión documental orientada al alcance, no certificación de las 23 hojas.
+
+| Evidencia exacta en F23 | Hallazgo y efecto en H0 |
+|---|---|
+| `General `!B5:F8 y B17:F20 | Perfil emisor/PSE, relación autorizada, certificado comunicado, modalidad e integridad se comprueban separadamente. No confundir validación técnica con dictamen PSE. |
+| `Factura2_0`!G5:L6; J12:L14; J17:L18 | Factura UBL 2.1, identidad y controles de duplicación/fecha. Para serie electrónica se documenta F + tres caracteres alfanuméricos y correlativo de hasta ocho dígitos; no adoptar los formatos numéricos de otros supuestos en el piloto por defecto. |
+| `Boleta2_0`!J12:L13 | Formato electrónico B + tres caracteres alfanuméricos y correlativo de hasta ocho dígitos; duplicación no es éxito fiscal. |
+| `Factura2_0`!C855:L858 | Contado sigue requiriendo información `FormaPago`/`Contado` y coherencia de sus campos; el recorte comercial no elimina campos fiscales obligatorios. |
+| `Resumen Diario1_1`!G6:K10 y H13:K18 | UBL 2.0 y CustomizationID 1.1; repetición de identificador del resumen, fechas y obligación OSE tienen validaciones propias. La observación 4443 sobre plazo no deroga el plazo legal de MF-06. |
+| `CódigosRetorno`!A16:B18, A59:B59, A94:B94, A362:B362 y A463:B463 | Errores de ticket inexistente/ajeno/no obtenido y documentos/comunicaciones ya presentados. Ninguno permite inferir aceptación, rechazo fiscal definitivo o ausencia de recepción solo por su texto. Interpretar en contexto y con evidencia. |
+| `Parámetros`!A7:G7 y A15:G15 | El libro define referencias a plazo y tasa; esas filas describen parámetros, no fijan por sí solas el valor vigente para cada fecha/operación. |
+| `Control de Cambios`!A527:H545 y A562:H563 | Varias modificaciones de producto SUNAT, NC/ND y resumen se postergan al **01/01/2027**. No activar indiscriminadamente las filas que muestran OBSERV/ERROR o doble fecha; revisar la remisión concreta de E562. Revalidar al implementar. |
+| `Control de Cambios`!A564:H564 | Última entrada no vacía encontrada: 26/08/2026, precisión para percepciones. No implica que todas las reglas del libro entren en vigor ese día. |
+
+La publicación de reglas GRE al 25/09/2026 encontrada en [Sistemas de emisión GRE](https://cpe.sunat.gob.pe/node/116) tiene otro ámbito; no sustituye este libro CPE ni amplía V1 a GRE. Para H1 basta usar el subconjunto necesario para XML/firma ficticios; para cada flujo posterior se completará el mapeo de campos, fechas y casos aprobado por fiscal.
+
+## Reglas verificadas y límites de aplicación
+
+| ID | Documento/tema | Regla y evidencia | Estado / condición de uso |
+|---|---|---|---|
+| MF-01 | Emisor | F01 describe requisitos RUC y comunicación de certificado/correo o vinculación PSE. F16 modifica la designación desde junio de 2026. | **C** general; **P** RUC, modalidad obligatoria, habilitación y fecha efectiva del piloto. No basta tener clave SOL. |
+| MF-02 | Modelo de prestación | F15/F21 y modificatoria F22; reparto operativo de la adenda. | **C** marco; **P** dictamen de la prestación independiente administrada. Separar VPS o usar certificado del cliente no prueba exención. No exigir homologación PSE derogada ni presumir autorización. |
+| MF-03 | Factura y notas de factura | F02 art. 3: envío en fecha de emisión o hasta el tercer día calendario siguiente. | **C**, corroborado F01. Ejemplo documental: emisión 24/10/2026 → tercer día siguiente 27/10/2026; no son 72 horas. Momento de emisión y vencimiento operativo requieren especificación validada. |
+| MF-04 | Identidad | F01/F05 y F23: formatos electrónicos F/B y correlativo de hasta ocho dígitos en celdas citadas. | **C** formatos inspeccionados; **P** series concretas/historial y reglas completas de notas antes del flujo afectado. No reiniciar series existentes en 1 ni adoptar formatos de contingencia sin alcance aprobado. |
+| MF-05 | Boleta/receptor | F05: consumidor final; no atribuir crédito fiscal como regla general. Identificar cuando lo solicite el receptor o el total supere S/700, con las excepciones de la fuente. | **C** para ámbito descrito; **P** campos exactos, no domiciliados, otras monedas y supuestos especiales del piloto. S/700 exactos no activa por sí solo la condición «supera». |
+| MF-06 | Resumen de boletas y notas | F03 art. 2.7/art. 21 y F20 sustentan la ruta/plazo; F23 confirma estructura y validación de modalidad OSE. | **C** base para SEE del contribuyente; D-07 **pendiente** como ruta única de la instalación administrada. Fiscal debe confirmar canal y compatibilidad regulatoria antes de liberar el flujo real. Ejemplo documental: emisión 24/10/2026 → séptimo día 31/10/2026. |
+| MF-07 | Boleta individual | F03/F04 documentan opción de ejemplar individual y plazo de cinco días, con resumen después en su plazo propio. | **P para habilitación**: consolidar artículo 12 con reformas posteriores y compatibilidad técnica. No se afirma que toda boleta deba ir siempre por resumen ni se adopta cinco días como plazo general V1. |
+| MF-08 | Transporte/evidencia | F09 §§2.4–2.7: factura/notas síncronas; resumen y baja asíncronos con ticket; consulta del resultado y CDR. F10 confirma servicios publicados. | **C documental**. HTTP, ticket y CDR son evidencias distintas. No interpretar el código del proceso como resultado fiscal sin examinar la CDR correspondiente. |
+| MF-09 | Recuperar factura | F09 §2.7.1: `getStatusCdr` por RUC, tipo, serie y número para factura/notas. | **C documental**, **P** prueba operativa posterior autorizada. Una respuesta sin CDR no prueba inexistencia ni autoriza cambiar XML. |
+| MF-10 | Recuperar resumen/baja | F09 §2.7.2: `getStatus` con ticket. F23 incorpora errores de ticket y duplicación. | **C con ticket**; **P** vía efectiva sin ticket. APP_FLOW define contención, evidencia y escalamiento; no se afirma recuperación por ID RC/RA ni reenvío garantizado. La adenda permite mantener el pendiente en H0 con bloqueo antes de activar el flujo real, sin impedir por sí solo una POC ficticia. |
+| MF-11 | Baja de factura/notas | F03 art. 14.1: documentos no otorgados; comunicación de baja; hasta séptimo día desde el siguiente a recibir CDR aceptada, bajo condiciones del artículo. | **C** regla general; **P** excepciones y decisión ante documento rechazado/no informado. No equivale a anular libremente una venta entregada. |
+| MF-12 | Baja de boleta/notas | F03 art. 14.2: resumen con estado anulado; plazo depende de si ya fue informada y recibió CDR aceptada o de su generación. | **C**. Registrar otorgamiento, generación y recepción de CDR por separado; no aplicar un plazo genérico desde emisión a todas las bajas. |
+| MF-13 | Nota de crédito | F06 y F08 art. 10.1: modificación por motivo permitido, referencia y mismo adquirente; factura aceptada o boleta previamente otorgada según F06. | **C** base; **P** lista de motivos/códigos y escenarios elegidos. Corrección excepcional de receptor/descripción y su plazo quedan bloqueadas por discrepancias de orientación. |
+| MF-14 | Nota de débito | F08 art. 10.2 respalda recuperación de costos/gastos posteriores y vínculo con operación previa. F07 confirma relación con un documento previo, pero contiene texto inconsistente. | **C** base; **P** motivos, importes y códigos V1. No trasladar a débito el plazo excepcional de crédito. Penalidades del adquirente quedan fuera de propuesta V1. |
+| MF-15 | Tributos | F12: tasa general total 18 % y composición 2026. | **C** general; **P** afectación, beneficios, retenciones/percepciones, SPOT, ISC, ICBPER y tratamiento del piloto. No afirmar que toda operación paga 18 % ni separar tributos UBL por inferirlo de esa tabla. |
+| MF-16 | Cálculos/pago | F18 y F23: campos de contado localizados; no confundir tolerancias del receptor con método de cálculo. | **C** campos de contado inspeccionados; **P** redondeo, precisión y casos concretos antes de H2. Perfil preliminar del propietario: General/RMT, PEN, IGV común y contado. Crédito, anticipos y otros casos siguen sin habilitar. |
+| MF-17 | XML/firma | F09, F11 y F23: factura 2.1 y resumen UBL 2.0/estructura 1.1 corroborados. | **C** estructura inspeccionada; **P** algoritmos/compatibilidad a demostrar en H1 y detalle por flujo. Separar versión de hoja, UBL y vigencia de regla; no activar cambios aplazados a 2027. |
+| MF-18 | Beta | F09 §2.3 delimita pruebas de estructuras; F10 distingue ambientes. | **C**. Un resultado Beta no acredita aceptación fiscal real ni la totalidad de validaciones de producción. |
+| MF-19 | Entrega y consulta | F01 y F03 art. 15.2: otorgamiento según destinatario/medio. F01 exige consulta web del adquirente por un año desde emisión, con acceso reservado a su información. | **C**; **P** mecanismo de autenticación y entrega. El proveedor facilita consulta segura por instalación; cliente define entrega/acceso según adenda. No exige una plataforma compartida. |
+| MF-20 | Conservación | F01 exige conservar documentos/comunicaciones. F13 art. 87.7 contempla cinco años o prescripción, el mayor, y cómputo específico. | **C** marco; **P** política aplicable a cada archivo y presupuesto. Un año de consulta web no es plazo de borrado; tampoco borrar automáticamente al cumplir cinco años desde emisión. |
+
+## Discrepancias y preguntas fiscales abiertas
+
+| ID | Hallazgo | Resolución necesaria y responsable |
+|---|---|---|
+| AF-01 | F01 menciona un plazo excepcional de diez días; F06 habla de quince días desde emisión; otras orientaciones difieren en el mes de cómputo. F07 reproduce texto ajeno al débito. | Revisor fiscal: consolidar art. 22.3 y modificatorias, motivo, fecha efectiva y calendario. Mantener correcciones excepcionales sin habilitar. No afecta automáticamente las devoluciones ordinarias, que también deben validarse por separado. |
+| AF-02 | Se confunden reglas SOL, SFS, OSE y contribuyente en páginas compartidas. F19 no se recuperó como texto consolidado. | Revisor fiscal: aprobar cadena aplicable por operación; D-03 debe identificar canal autorizado del piloto. |
+| AF-03 | **Acceso y revisión inicial resueltos en v0.2:** F23 descargado, huella y celdas registradas. Contiene vigencias futuras. | Fiscal revisa subconjunto aplicable por flujo; no se exige transcribir todo el libro para H1. Revalidar antes de implementar cada operación. |
+| AF-04 | F09 permite consulta con ticket; F23 no aporta vía concluyente sin ticket. | Proveedor conserva evidencia y escala; representante/profesional participan en conciliación. Resolver y probar procedimiento antes de liberar boletas/bajas reales; de lo contrario permanecen bloqueadas. Pendiente declarado de H0 según adenda, no requisito de la POC H1 ficticia. |
+| AF-05 | Modelo **aprobado D-01**: instalación por cliente/VPS administrado, RUC inicial único. Perfil General/RMT, PEN/IGV/contado aún recomendado; actividad, RUC y casos reales pendientes. | Profesional competente revisa tributación y PSE; representante acredita modalidad/credenciales antes de uso real. El proveedor es custodio técnico; no se presume custodia exclusiva del cliente. |
+| AF-06 | Motivos NC/ND, entrega y conservación operativa todavía no concretados. | Resolver motivos antes de H5, entrega antes de H4/H6 y almacenamiento/custodia antes de usarlos; mantener compromisos de seguridad y conservación desde H0. Una obligación que cambie el recorte debe volver al propietario. |
+| AF-07 | Coexistencia y series reales pendientes. | Representante confirma series/historial/exclusividad antes de activación real. No son prerrequisito del ensayo H1 ficticio; no consultar ni alterar SOL en esta revisión. |
+
+## Escenarios de aceptación fiscal a desarrollar después de aprobación
+
+Son especificaciones de pruebas; **ninguna se ejecutó contra SUNAT en H0**. Los escenarios con reglas P no pueden darse por aceptados. Las pruebas técnicas futuras distinguirán simulación local, validación Beta y piloto real autorizado.
+
+| Caso | Válido / condición positiva | Inválido o incierto / comportamiento esperado | Reglas |
+|---|---|---|---|
+| CF-01 | Emisor cuya elegibilidad y canal están acreditados | RUC/modalidad no confirmados: impedir activación fiscal real | MF-01–02 |
+| CF-02 | Factura del alcance dentro de ventana oficial | Fecha futura, fuera de ventana o cálculo sin confirmar: detener y escalar; no prometer subsanación automática | MF-03, MF-16 |
+| CF-03 | Serie/correlativo no utilizados y autorizados para operación | Colisión o operación repetida: no generar otra identidad | MF-04 |
+| CF-04 | Boleta identificada cuando corresponde | Más de S/700 sin identificación: falla; S/700 exactos y solicitud de receptor se evalúan separadamente | MF-05 |
+| CF-05 | Resumen del mismo día dentro de ventana | Mezcla de fechas o exceso de plazo: no tratarlo como resumen válido | MF-06 |
+| CF-06 | Ticket persistido → consulta → CDR vinculada | Ticket pendiente no es aceptación; timeout sin ticket conserva incertidumbre y sigue AF-04 | MF-08, MF-10 |
+| CF-07 | CDR de factura recuperada con identidad coincidente | Sin CDR, CDR ajena o error de consulta: no marcar aceptación ni regenerar XML | MF-08–09 |
+| CF-08 | Baja de documento no otorgado, condiciones y plazo comprobados | Documento ya otorgado: usar evaluación de nota aplicable; nunca borrar historial | MF-11–14 |
+| CF-09 | Baja de boleta por resumen con fechas de referencia correctas | Usar solo fecha de emisión para boleta ya informada: rechazar cálculo de plazo | MF-12 |
+| CF-10 | NC de motivo aprobado y relación verificada | Factura rechazada, receptor distinto o corrección excepcional pendiente: no habilitar | MF-13 |
+| CF-11 | ND de motivo aprobado sobre operación elegible | Tratar ND como NC o aceptar penalidad fuera de alcance: bloquear | MF-14 |
+| CF-12 | Totales/tributos del perfil con reglas y ejemplos aprobados | Tasa especial, redondeo no respaldado o campo de pago pendiente: no emitir | MF-15–17 |
+| CF-13 | Evidencia de Beta identificada como prueba | Presentarla como aceptación de producción: falla de aceptación del producto | MF-18 |
+| CF-14 | Receptor accede únicamente a lo otorgado a él | Identificador conocido de otro receptor/empresa: acceso denegado | MF-19 |
+| CF-15 | Recuperación coherente de documentos y evidencias conservadas | Borrado por un año de antigüedad o falta de respaldo: incumple diseño | MF-20 |
+
+## Evidencia pendiente para firma fiscal
+
+El acta asociará MF aplicables, fuente/versión y responsable; las exclusiones comerciales no son prohibiciones SUNAT. La adenda permite cerrar H0 solo mediante aprobación expresa de V1 propuesta, responsabilidades y pendientes con puerta, sin presentar PSE/AF-04 como resueltos. Dictamen, elegibilidad y validación fiscal del cliente real bloquean prestación/producción H8; AF-04 bloquea activación del flujo afectado, con revisión previa H4/H5 y evidencia H7. Una integración condicionada se resuelve antes de comprometer su diseño. Firmante fiscal y aprobación expresa de H0: **pendientes**. H1 tampoco está autorizado.
