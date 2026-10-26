@@ -8,7 +8,7 @@
 <dt>IGV de ejemplo (18%)</dt><dd>S/ {{ \App\Invoices\InvoiceInput::decimal($invoice->tax_cents) }}</dd>
 <dt>Total</dt><dd><strong>S/ {{ \App\Invoices\InvoiceInput::decimal($invoice->total_cents) }}</strong></dd>
 </dl>
-<p><strong>Estado de transporte:</strong> {{ match($invoice->transport_status) { 'pending_simulation' => 'Pendiente de simulación', 'simulated_accepted' => 'Aceptada en simulación', 'simulated_rejected' => 'Rechazada en simulación', default => 'Simulación incierta; detenida sin reintento automático' } }}</p>
+<p><strong>Estado de transporte:</strong> {{ match($invoice->transport_status) { 'pending_simulation' => 'Pendiente de simulación', 'simulation_processing' => 'Simulación en curso; resultado pendiente', 'simulation_retry_wait' => 'Reintento local seguro pendiente', 'simulation_failed' => 'Intentos locales agotados; requiere revisión', 'simulated_accepted' => 'Aceptada en simulación', 'simulated_rejected' => 'Rechazada en simulación', default => 'Simulación incierta; detenida sin reintento automático' } }}</p>
 <p><strong>Estado fiscal:</strong> No enviado a SUNAT. Sin CDR oficial.</p>
 <p>Evidencias privadas:
 <a href="{{ route('invoices.download', [$invoice->id, 'xml']) }}">XML firmado</a> ·

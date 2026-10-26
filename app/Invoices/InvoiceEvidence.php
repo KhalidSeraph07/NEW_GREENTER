@@ -78,6 +78,10 @@ final class InvoiceEvidence
         if (!preg_match('/\A[0-9a-f-]{36}\z/', $id)) {
             throw new RuntimeException('Identificador de evidencia inválido.');
         }
-        return rtrim(config('h2.evidence_root'), '/').'/'.$id;
+        $root = rtrim(config('h2.evidence_root'), '/');
+        if (is_link($root) || is_link($root.'/'.$id)) {
+            throw new RuntimeException('No se admite evidencia mediante directorios enlazados.');
+        }
+        return $root.'/'.$id;
     }
 }

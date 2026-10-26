@@ -8,7 +8,7 @@
 @foreach ($invoices as $invoice)
 <tr><td><a href="{{ route('invoices.show', $invoice->id) }}">F000-{{ $invoice->number }}</a></td>
 <td>{{ \App\Invoices\InvoiceInput::decimal($invoice->total_cents) }}</td>
-<td>{{ match($invoice->transport_status) { 'pending_simulation' => 'Pendiente de simulación', 'simulated_accepted' => 'Aceptada en simulación', 'simulated_rejected' => 'Rechazada en simulación', default => 'Simulación incierta' } }}</td></tr>
+<td>{{ match($invoice->transport_status) { 'pending_simulation' => 'Pendiente de simulación', 'simulation_processing' => 'Simulación en curso; resultado pendiente', 'simulation_retry_wait' => 'Reintento local seguro pendiente', 'simulation_failed' => 'Intentos locales agotados; requiere revisión', 'simulated_accepted' => 'Aceptada en simulación', 'simulated_rejected' => 'Rechazada en simulación', default => 'Simulación incierta' } }}</td></tr>
 @endforeach
 </tbody></table>
 {{ $invoices->links() }}

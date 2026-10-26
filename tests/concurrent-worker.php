@@ -22,9 +22,12 @@ while (!is_file($barrier.'/start')) {
 }
 $started = microtime(true);
 try {
-    $invoice = $action === 'issue'
-        ? app(App\Invoices\InvoiceIssuer::class)->issue((int) $userId, json_decode($payload, true, flags: JSON_THROW_ON_ERROR))
-        : app(App\Invoices\SimulatedTransport::class)->dispatch($payload);
+    $invoice = match ($action) {
+        'issue' => app(App\Invoices\InvoiceIssuer::class)->issue((int) $userId, json_decode($payload, true, flags: JSON_THROW_ON_ERROR)),
+        'dispatch' => app(App\Invoices\SimulatedTransport::class)->dispatch($payload),
+        'recover' => app(App\Invoices\SimulatedTransport::class)->recover($payload),
+        default => throw new RuntimeException('Accion de prueba no permitida.'),
+    };
     echo json_encode(['pid' => getmypid(), 'started' => $started, 'ended' => microtime(true),
         'id' => $invoice?->id, 'number' => $invoice?->number, 'conflict' => false], JSON_THROW_ON_ERROR);
 } catch (Symfony\Component\HttpKernel\Exception\ConflictHttpException) {

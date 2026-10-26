@@ -1,5 +1,6 @@
 """Ensayo HTTP real, restringido a loopback y datos ficticios. No imprime credenciales."""
 import base64
+import argparse
 import hashlib
 import http.cookiejar
 import io
@@ -12,6 +13,9 @@ import urllib.request
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('--report', type=Path, default=ROOT / 'storage/audit/h2/http-smoke.json')
+args = parser.parse_args()
 env = {}
 for line in (ROOT / ".env").read_text(encoding="utf-8-sig").splitlines():
     if "=" in line and not line.startswith("#"):
@@ -106,7 +110,7 @@ result = {
     "invoice_url": invoice_url, "checks": checks,
     "xml_sha256": hashlib.sha256(xml).hexdigest(),
 }
-report = ROOT / "storage/audit/h2/http-smoke.json"
+report = args.report
 report.parent.mkdir(parents=True, exist_ok=True)
 report.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
 print(json.dumps(result, ensure_ascii=True))
