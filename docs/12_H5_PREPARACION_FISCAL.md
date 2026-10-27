@@ -2,7 +2,7 @@
 
 Implementación y evidencias de H5-A: [vertical ficticia cerrada con observaciones](13_H5A_NOTAS_FACTURA_FICTICIAS.md). H5-B permanece sin autorización.
 
-Corte: **26/10/2026, America/Lima**. H4 cerrado. Decisiones posteriores: **recorte NC 01/ND 02 aprobado; H5-A sobre facturas ficticias cerrado formalmente con observaciones y PR #3 fusionado por aprobación expresa**. H5 permanece incompleto. H5-B, H6 y comunicaciones fiscales reales no autorizados. SEE del contribuyente previsto, condicionado a elegibilidad/PSE. D-02 y AF-06 registran la aprobación del recorte; no acreditan validación fiscal de un emisor real.
+Corte: **26/10/2026, America/Lima**. H4 cerrado. Decisiones posteriores: **recorte NC 01/ND 02 aprobado; H5-A sobre facturas ficticias cerrado formalmente con observaciones y PR #3 fusionado por aprobación expresa**. H5 permanece incompleto. [H5-B autorizado posteriormente solo como vertical ficticia, sin cierre](14_H5B_NOTAS_BOLETA_FICTICIAS.md). H6 y comunicaciones fiscales reales no autorizados. SEE del contribuyente previsto, condicionado a elegibilidad/PSE. D-02 y AF-06 registran la aprobación del recorte; no acreditan validación fiscal de un emisor real.
 
 **Recomendación:** comenzar con **NC tipo 07/motivo 01 (anulación de la operación)** y **ND tipo 08/motivo 02 (aumento en el valor)**, sobre una factura y después sobre una boleta, en entregas separadas. Un comprobante original local por nota, un ítem, PEN, contado e IGV común del ensayo. Son límites del producto aprobados, no una lista de todo lo permitido por SUNAT. Los motivos restantes quedan deshabilitados, sin motor genérico de ajustes.
 

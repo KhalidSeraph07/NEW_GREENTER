@@ -78,7 +78,7 @@ check('debit_xml_08_02', status == 200 and ET.fromstring(xml).tag.endswith('Debi
 status, _, _ = request('/storage/app/private/h5/' + debit_url.rsplit('/', 1)[1] + '/signed.xml')
 check('private_files_not_public', status == 404)
 status, _, _ = request('/boleta-notes')
-check('h5b_not_implemented', status == 404)
+check('unsupported_boleta_notes_alias_404', status == 404)
 report = {'scope': 'H5-A FICTICIO SIN SUNAT NI CDR OFICIAL', 'checks': checks, 'h2_checks': 13, 'h4_checks': 17,
           'credit_url': note_url, 'debit_url': debit_url}
 (args.output_dir / 'h5a.json').write_text(json.dumps(report, indent=2), encoding='utf-8')

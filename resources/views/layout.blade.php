@@ -18,7 +18,7 @@
 </head>
 <body><main>
     <p class="notice"><strong>@yield('milestone', 'H2') · Simulación local · Sin validez fiscal.</strong> No se envía a SUNAT.</p>
-    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a><a href="{{ route('boletas.index') }}">Boletas / RC ficticios</a><a href="{{ route('notes.index') }}">Notas de factura ficticias</a></nav>
+    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a><a href="{{ route('boletas.index') }}">Boletas / RC ficticios</a><a href="{{ route('notes.index') }}">Notas de factura ficticias</a><a href="{{ route('receipt-notes.index') }}">Notas de boleta / RC ficticios</a></nav>
     @if ($errors->any())
         <div class="errors" role="alert"><p>Revisa los datos:</p><ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
     @endif

@@ -5,6 +5,12 @@ use App\Http\Controllers\BoletaController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('h2.operator')->group(function () {
+    Route::get('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'index'])->name('receipt-notes.index');
+    Route::post('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'issue'])->name('receipt-notes.store');
+    Route::post('/note-summaries', [\App\Http\Controllers\BoletaNoteController::class, 'freeze'])->name('receipt-notes.freeze');
+    Route::get('/receipt-notes/{kind}/{id}', [\App\Http\Controllers\BoletaNoteController::class, 'show'])->name('receipt-notes.show');
+    Route::post('/note-summaries/{id}/simulate', [\App\Http\Controllers\BoletaNoteController::class, 'process'])->name('receipt-notes.process');
+    Route::get('/receipt-notes/{kind}/{id}/evidence/{file}', [\App\Http\Controllers\BoletaNoteController::class, 'download'])->name('receipt-notes.download');
     Route::get('/invoice-notes', [\App\Http\Controllers\InvoiceNoteController::class, 'index'])->name('notes.index');
     Route::post('/invoice-notes', [\App\Http\Controllers\InvoiceNoteController::class, 'store'])->name('notes.store');
     Route::get('/invoice-notes/{id}', [\App\Http\Controllers\InvoiceNoteController::class, 'show'])->name('notes.show');
