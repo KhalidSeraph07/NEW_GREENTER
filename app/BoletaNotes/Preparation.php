@@ -53,6 +53,7 @@ final class Preparation
                     $this->files->verify($prior->id, $prior->artifacts); $this->original->verify($prior);
                     return $prior;
                 }
+                app(\App\Voids\Grant::class)->assertNoteAllowed('boleta', $boleta->id);
                 $this->original->eligible($boleta);
                 if (BoletaNote::query()->where('original_id', $boleta->id)->exists()) { throw new ConflictHttpException('Original ya reservado por una nota; no se libera automaticamente.'); }
                 if ($v['emission_date'] < $boleta->emission_date
