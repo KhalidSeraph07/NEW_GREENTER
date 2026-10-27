@@ -1,6 +1,6 @@
 # H5-B — notas sobre boletas y RC ficticios
 
-Estado: autorizado para implementación y revisión; no cerrado. Base `1d8ac51acc9f6e334aba129acb3f41b626e48ecd`. H5-A cerrado con observaciones, sin reapertura. H6 y toda comunicación/identidad fiscal real continúan prohibidos.
+Estado: **H5-B cerrado formalmente con observaciones por aprobación expresa del propietario (Decisión 1)**, sobre el HEAD `dd446d60eb07a930b7da5c33f73f77ded6880fe2`. PR #4 fusionado mediante merge commit por autorización expresa (Decisión 2). **H5 permanece incompleto.** Base `1d8ac51acc9f6e334aba129acb3f41b626e48ecd`. H5-A cerrado con observaciones, sin reapertura. H6 y toda comunicación/identidad fiscal real continúan prohibidos.
 
 ## Comprobación fiscal previa al código RC (26/10/2026)
 
@@ -17,7 +17,7 @@ La aplicabilidad al emisor, tratamiento fiscal/IGV, SEE/PSE y vigencias futuras 
 1. Original y nota: boleta propia, otorgamiento declarado ficticio, RC aceptado correlacionado, referencia congelada, NC completa/ND incremento positivo, una nota permanente por original, correlativo independiente, XML/firma/ZIP privados. Sin envío individual.
 2. RC nuevo de notas: miembros propios explícitos, misma fecha de nota, contenido/identidad/manifiesto congelados y outbox en un commit. Numeración RC comparte el contador existente para evitar colisiones, sin alterar documentos históricos.
 3. Transporte: simulador local, ticket ficticio persistido, 98 acotado, 0/99 solo tras correlación íntegra; incertidumbre bloquea reenvío. Recuperación solo de consulta con ticket conservado. Historial/alertas mínimos y evidencia sin borrado.
-4. Pruebas: NC contra ND, claves repetidas, referencias/fechas/propiedad incorrectas, firmas y alteraciones, rechazo/incertidumbre, SIGKILL, commit fallido, preservación, regresión H1–H5-A y CI remoto. Rama y PR Draft; sin fusión automática.
+4. Pruebas: NC contra ND, claves repetidas, referencias/fechas/propiedad incorrectas, firmas y alteraciones, rechazo/incertidumbre, SIGKILL, commit fallido, preservación, regresión H1–H5-A y CI remoto. Implementación trabajada en rama y PR Draft; fusión posterior por autorización expresa, según registro de cierre.
 
 ## Puertas conservadas
 
@@ -67,4 +67,12 @@ El control HTTP heredado de `/boleta-notes` conserva exactamente su condición 4
 
 El snapshot previo se niega a sobrescribirse. El arnés agrega fixtures propios con UUID; no limpia outboxes globales ni repara históricos. Los contadores avanzan por operaciones nuevas legítimas y se excluyen de la comparación de documentos previos. Los archivos de evidencia se mantienen privados e ignorados por Git en `storage/audit/h5b/`; el CI conserva resultados en sus logs.
 
-**Propuesta:** revisión de código y evidencias del [PR #4 Draft](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/4), con posibilidad de cierre ficticio con las observaciones y responsables anteriores. Pendiente de aprobación expresa del propietario; no fusionar automáticamente. H5-B y H5 no se declaran cerrados. H6 y toda actividad/identidad fiscal real siguen prohibidos.
+## Registro de cierre y fusión
+
+El propietario aprobó expresamente H5-B con observaciones sobre `dd446d60eb07a930b7da5c33f73f77ded6880fe2`. Antes de actuar se revalidaron ese HEAD exacto, [CI Push 40432317330](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40432317330) y [CI Pull Request 40432322882](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40432322882) completed/success, checks aprobados, mergeable/clean, ramas local/remota idénticas y árbol limpio, sin cambios adicionales. Se registró el cierre primero en el PR para conservar intacto el commit revisado. Resultados aceptados: 219 pruebas/1.420 aserciones, H1 26 y HTTP 71 satisfactorios.
+
+[PR #4](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/4) marcado Ready for Review y fusionado mediante [merge commit `228543d1d7d51e864955134e3b5c1c69f02bafcc`](https://github.com/KhalidSeraph07/NEW_GREENTER/commit/228543d1d7d51e864955134e3b5c1c69f02bafcc), sin squash ni rebase. Padres: `1d8ac51acc9f6e334aba129acb3f41b626e48ecd` y el HEAD aprobado. Se comprobó que el árbol del merge coincide exactamente con el aprobado. Los estados de seis Markdown se actualizan en un commit exclusivamente documental posterior; sin cambios funcionales, refactorizaciones, dependencias o infraestructura ni operaciones sobre BD/evidencias locales durante este cierre.
+
+CI del merge: [ejecución 40433677692](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40433677692). El CI del commit documental posterior se identifica por su SHA en GitHub Actions; ambos resultados se verifican antes del informe final. Se conservan íntegramente los pendientes, responsables y condiciones de la sección «Puertas conservadas».
+
+**H5-B cerrado con observaciones NO equivale a H5 completo.** Bajas, correcciones de RC rechazados y reemisión permanecen pendientes de decisión expresa del propietario y validación antes de habilitar esos flujos; este cierre no las resuelve. H6 no autorizado. Continúan prohibidas comunicaciones SUNAT/Beta/producción e identidades/certificados/credenciales fiscales reales. No se habilitan operaciones reales ni distribución comercial.
