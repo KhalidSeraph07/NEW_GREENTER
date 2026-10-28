@@ -9,7 +9,7 @@ final class ResultTest extends CaseBase
     #[DataProvider('families')]
     public function test_reader_refuses_terminal_state_without_receipt_even_if_storage_once_allowed_it(string $f): void
     {
-        $r=$this->root($f);$n=$this->child($f,$r);$before=$n->getRawOriginal();
+        $r=$this->root($f);$n=$this->child($f,$r)->fresh();$before=$n->getRawOriginal();
         if($f==='invoice'){$n->transport_status='simulated_accepted';}else{$n->state='sim_accepted';}
         try{app(Policy::class)->verifyLinked($f,$n);$this->fail('Aceptacion sin resultado.');}
         catch(ConflictHttpException){$this->assertSame($before,$n->fresh()->getRawOriginal());}
