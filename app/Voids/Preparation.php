@@ -73,7 +73,7 @@ final class Preparation
     public function verify(VoidBatch $batch): void
     {
         $this->files->verify($batch->id,$batch->artifacts);
-        $actual=DB::table('h5c1_members')->where('batch_id',$batch->id)->orderBy('position')->get();
+        $actual=DB::table('h5c1_members')->where('batch_id',\App\Corrections\Family::anchor('void',$batch->id))->orderBy('position')->get();
         if ($actual->count()!==count($batch->snapshot['members'])) { throw new \LogicException('Membresia de baja alterada.'); }
         foreach($batch->snapshot['members'] as $i=>$m){
             $row=$actual[$i]; $grant=DB::table('h5c1_grants')->where('id',$m['grant_id'])->sole();

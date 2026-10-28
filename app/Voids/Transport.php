@@ -81,6 +81,7 @@ final class Transport
             if ($phase === 'send' && ($job->send_attempts !== 0 || $summary->ticket !== null)) { throw new LogicException('Reenvio RA/RC prohibido.'); }
             if ($phase === 'poll' && (!$summary->ticket || $job->cycle_attempts >= 3 || $job->poll_attempts >= 9)) { return null; }
             if ($phase === 'send') { foreach ($summary->snapshot['members'] as $m) { app(Window::class)->check($m); } }
+            if ($phase === 'send') { app(\App\Corrections\Policy::class)->beforeSend('void',$summary); }
             $this->verify($summary);
             $token = (string) Str::uuid();
             DB::table('h5c1_outbox')->where('batch_id', $id)->update(['status' => 'processing', 'token' => $token,
@@ -150,12 +151,17 @@ final class Transport
             $nodes = $root->getElementsByTagName($tag);
             if ($nodes->length !== 1 || $nodes->item(0)->textContent !== $expected) { return null; }
         }
+        if (isset($response['technical_rejection'])) {
+            $nodes=$root->getElementsByTagName('TechnicalRejectionHash');
+            if ($nodes->length!==1 || $nodes->item(0)->textContent!==\App\Notes\Original::hash($response['technical_rejection'])) { return null; }
+        }
         $members = []; foreach ($root->getElementsByTagName('Member') as $node) { $members[] = $node->textContent; }
         return $members === array_map(fn ($m) => \App\Notes\Original::hash($m), $summary->snapshot['members']) ? ($code === '0' ? 'accepted' : 'rejected') : null;
     }
 
     private function verify(VoidBatch $summary): void
     {
+        app(\App\Corrections\Policy::class)->verifyLinked('void',$summary);
         app(Preparation::class)->verify($summary);
     }
 

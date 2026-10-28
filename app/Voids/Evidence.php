@@ -28,7 +28,7 @@ final class Evidence
             }
             $zip = new ZipArchive();
             if ($zip->open($dir.'/document.zip', ZipArchive::CREATE | ZipArchive::EXCL) !== true
-                || !$zip->addFromString($name.'.xml', $contents['xml']) || !$zip->close()) {
+                || !$zip->addFromString(\App\Corrections\PackingDefect::entry($name.'.xml'), $contents['xml']) || !$zip->close()) {
                 throw new RuntimeException('ZIP H5-C1 incompleto.');
             }
             chmod($dir.'/document.zip', 0600);

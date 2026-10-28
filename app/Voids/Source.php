@@ -61,6 +61,7 @@ final class Source
             case 'boleta':
                 app(\App\BoletaNotes\Original::class)->eligible($r);
                 $rc = DailySummary::query()->findOrFail(DB::table('h4_members')->where('boleta_id',$id)->value('summary_id'));
+                $rc = \App\Corrections\Family::effective('h4',$rc);
                 $response = $rc->result['response'];
                 $acceptance = $this->event('h4_events','summary_id',$rc->id,['result_saved'],$response,
                     DB::table('h4_outbox')->where('summary_id',$rc->id)->value('token'));
@@ -70,6 +71,7 @@ final class Source
             case 'boleta_note':
                 app(\App\BoletaNotes\SummaryPreparation::class)->verifyNote($r);
                 $rc = NoteSummary::query()->findOrFail(DB::table('h5b_members')->where('note_id',$id)->value('summary_id'));
+                $rc = \App\Corrections\Family::effective('h5b',$rc);
                 app(\App\BoletaNotes\Evidence::class)->verify($rc->id,$rc->artifacts);
                 $response = $rc->result['response'] ?? [];
                 $receipt = DB::table('h5b_simulation_receipts')->where('summary_id',$rc->id)->first();
@@ -79,7 +81,7 @@ final class Source
                     || $rc->reference_date !== $r->emission_date || !is_string($rc->ticket)
                     || DB::table('h5b_outbox')->where('summary_id',$rc->id)->value('status') !== 'completed'
                     || Original::hash($response) !== Original::hash(app(\App\BoletaNotes\LocalSummarySimulator::class)->poll($rc->ticket,'0'))
-                    || DB::table('h5b_members')->where('summary_id',$rc->id)->orderBy('position')->pluck('note_id')->all() !== array_column($rc->snapshot['members'],'id')) { $this->fail(); }
+                    || DB::table('h5b_members')->where('summary_id',\App\Corrections\Family::anchor('h5b',$rc->id))->orderBy('position')->pluck('note_id')->all() !== array_column($rc->snapshot['members'],'id')) { $this->fail(); }
                 $matches = array_values(array_filter($rc->snapshot['members'],fn ($m)=>$m['id']===$id));
                 if (count($matches)!==1 || Original::hash($matches[0])!==Original::hash(app(\App\BoletaNotes\SummaryPreparation::class)->member($r))) { $this->fail(); }
                 $acceptance = $this->event('h5b_events','summary_id',$rc->id,['result_saved'],$response,

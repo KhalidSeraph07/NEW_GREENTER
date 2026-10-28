@@ -83,6 +83,7 @@ final class SummaryTransport
             if ($phase === 'send' && $summary->reference_date < now('America/Lima')->subDays(7)->toDateString()) {
                 throw ValidationException::withMessages(['summary' => 'Ventana de envio D+7 vencida; requiere revision.']);
             }
+            if ($phase === 'send') { app(\App\Corrections\Policy::class)->beforeSend('h5b',$summary); }
             $this->verify($summary);
             $token = (string) Str::uuid();
             DB::table('h5b_outbox')->where('summary_id', $id)->update(['status' => 'processing', 'token' => $token,
@@ -152,14 +153,19 @@ final class SummaryTransport
             $nodes = $root->getElementsByTagName($tag);
             if ($nodes->length !== 1 || $nodes->item(0)->textContent !== $expected) { return null; }
         }
+        if (isset($response['technical_rejection'])) {
+            $nodes=$root->getElementsByTagName('TechnicalRejectionHash');
+            if ($nodes->length!==1 || $nodes->item(0)->textContent!==\App\Notes\Original::hash($response['technical_rejection'])) { return null; }
+        }
         $members = []; foreach ($root->getElementsByTagName('Member') as $node) { $members[] = $node->textContent; }
         return $members === array_map(fn ($m) => \App\Notes\Original::hash($m), $summary->snapshot['members']) ? ($code === '0' ? 'accepted' : 'rejected') : null;
     }
 
     private function verify(NoteSummary $summary): void
     {
+        app(\App\Corrections\Policy::class)->verifyLinked('h5b',$summary);
         $this->files->verify($summary->id, $summary->artifacts);
-        $ids = DB::table('h5b_members')->where('summary_id', $summary->id)->orderBy('position')->pluck('note_id')->all();
+        $ids = DB::table('h5b_members')->where('summary_id', \App\Corrections\Family::anchor('h5b', $summary->id))->orderBy('position')->pluck('note_id')->all();
         if ($ids !== array_column($summary->snapshot['members'], 'id')) { throw new LogicException('Miembros RC alterados.'); }
         foreach ($summary->snapshot['members'] as $m) {
             $n = BoletaNote::query()->findOrFail($m['id']);
