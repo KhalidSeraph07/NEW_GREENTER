@@ -29,4 +29,14 @@ final class ConcurrencyTest extends WorkerCase
         foreach($rows as $i=>$row){$this->assertFalse($row['conflict']);$names[]=Family::record($requests[$i]['family'],$this->operator->id,$row['id'])->name;}
         $this->assertCount(3,array_unique($names));
     }
+    public function test_reissue_racing_a_note_and_void_correction_racing_grant_cannot_change_source_eligibility(): void
+    {
+        $r=$this->root('invoice');$rows=$this->together('prepare',[
+            ['family'=>'invoice','input'=>$this->reissueInput($r)],['family'=>'invoice','_action'=>'noteF','input'=>$this->noteInput($r->id)]]);
+        $this->assertFalse($rows[0]['conflict']);$this->assertTrue($rows[1]['conflict']);$this->assertSame(0,DB::table('h5_notes')->where('original_id',$r->id)->count());
+        $v=$this->root('void');$m=$v->snapshot['members'][0];$rows=$this->together('prepare',[
+            ['family'=>'void','input'=>$this->correctionInput($v)],['family'=>'void','_action'=>'grant','input'=>['kind'=>$m['kind'],'id'=>$m['id'],'state'=>'granted',
+                'provenance'=>'AFIRMACION FICTICIA EN CARRERA NO HISTORICA','idempotency_key'=>(string)\Illuminate\Support\Str::uuid()]]]);
+        $this->assertFalse($rows[0]['conflict']);$this->assertTrue($rows[1]['conflict']);$this->assertSame(1,DB::table('h5c1_members')->where('batch_id',$v->id)->count());
+    }
 }

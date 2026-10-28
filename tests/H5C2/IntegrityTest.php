@@ -41,7 +41,8 @@ final class IntegrityTest extends CaseBase
         $this->blocked(fn()=>DB::table($events)->where(Family::COLUMN[$f],$r->id)->delete());
         $this->blocked(fn()=>DB::table($table)->where('id',$n->id)->update([$f==='invoice'?'transport_status':'state'=>$f==='invoice'?'simulated_accepted':'sim_accepted']));
         if($f!=='invoice'){$members=match($f){'void'=>'h5c1_members',default=>$f.'_members'};$this->blocked(fn()=>DB::table($members)->where($f==='void'?'batch_id':'summary_id',$r->id)->delete());}
-        $this->assertSame($r->snapshot,$r->fresh()->snapshot);$this->assertSame($n->snapshot,$n->fresh()->snapshot);
+        $this->assertSame(\App\Notes\Original::hash($r->snapshot),\App\Notes\Original::hash($r->fresh()->snapshot));
+        $this->assertSame(\App\Notes\Original::hash($n->snapshot),\App\Notes\Original::hash($n->fresh()->snapshot));
     }
     public function test_sql_cannot_adopt_an_existing_unrelated_invoice_as_successor(): void
     {

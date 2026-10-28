@@ -30,6 +30,7 @@ final class H5C2Process extends Command
                     $root=rtrim(config($cfg.'.evidence_root'),'/');if(is_link($root)){throw new \RuntimeException('Raiz enlazada; detener inspeccion.');}
                     foreach(glob($root.'/*',GLOB_ONLYDIR)?:[] as $dir){
                         $model=Family::MODELS[$f];$key=basename($dir);
+                        if(!Str::isUuid($key)){$issues[]=['family'=>$f,'id'=>$key,'issue'=>'orphan_candidate'];continue;}
                         // h4/h5b comparten raiz de documentos fuente y comunicaciones.
                         $sourceExists=match($f){'h4'=>\App\Models\Boleta::query()->whereKey($key)->exists(),
                             'h5b'=>\App\Models\BoletaNote::query()->whereKey($key)->exists(),default=>false};

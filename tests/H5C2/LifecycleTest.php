@@ -100,6 +100,17 @@ final class LifecycleTest extends CaseBase
         $r=$this->root('invoice');Carbon::setTestNow(Carbon::parse('2027-01-01T12:00:00-05:00'));
         $this->expectException(ValidationException::class);$this->child('invoice',$r);
     }
+    public static function communications(): array {return [['h4'],['h5b'],['void']];}
+    #[DataProvider('communications')]
+    public function test_query_budget_is_bounded_and_lost_ticket_has_no_recovery(string $f): void
+    {
+        $r=$this->root($f);$n=$this->child($f,$r);$t=$this->transport($f);$ticket=$t->send($n->id)->ticket;
+        for($cycle=0;$cycle<3;$cycle++){for($i=0;$i<3;$i++){$t->poll($n->id,'98');$this->travel(6)->seconds();}$this->assertSame('uncertain',$n->fresh()->state);$t->recover($n->id);}
+        $this->assertSame($ticket,$n->fresh()->ticket);$this->assertNull($t->send($n->id));$this->assertNull($t->poll($n->id));
+        $this->assertSame(9,DB::table(Family::OUTBOX[$f])->where(Family::COLUMN[$f],$n->id)->value('poll_attempts'));
+        $other=$this->root($f);$lost=$this->child($f,$other);$t->send($lost->id,'lost_ticket');$this->travel(6)->minutes();
+        $this->assertSame('uncertain',$t->recover($lost->id)->state);$this->assertNull($lost->fresh()->ticket);$this->assertNull($t->poll($lost->id));
+    }
     public static function uncertain(): array {return [['h4','exception'],['h4','lost_ticket'],['h4','incomplete'],['h4','99'],['h4','98'],['h4','0']];}
     #[DataProvider('uncertain')]
     public function test_only_complete_explicit_definitive_rejection_is_eligible(string $f,string $scenario): void

@@ -13,7 +13,10 @@ while(!is_file($barrier.'/start')){if(microtime(true)>$until){throw new RuntimeE
 Illuminate\Support\Carbon::setTestNow(Illuminate\Support\Carbon::parse(file_get_contents($barrier.'/clock')));
 $p=json_decode($json,true,flags:JSON_THROW_ON_ERROR);$f=$p['family'];$started=microtime(true);
 try{
-    if($action==='prepare'){$r=$f==='invoice'?app(App\Corrections\InvoiceReissue::class)->prepare((int)$user,$p['input']):app(App\Corrections\CommunicationCorrection::class)->prepare($f,(int)$user,$p['input']);}
+    $action=$p['_action']??$action;
+    if($action==='noteF'){$r=app(App\Notes\Preparation::class)->issue((int)$user,$p['input']);}
+    elseif($action==='grant'){$r=app(App\Voids\Grant::class)->record((int)$user,$p['input']);}
+    elseif($action==='prepare'){$r=$f==='invoice'?app(App\Corrections\InvoiceReissue::class)->prepare((int)$user,$p['input']):app(App\Corrections\CommunicationCorrection::class)->prepare($f,(int)$user,$p['input']);}
     elseif($f==='invoice'){$t=app(App\Invoices\SimulatedTransport::class);$r=$action==='send'?$t->dispatch($p['id'],$p['scenario']??'accepted'):$t->recover($p['id']);}
     else{$t=app(match($f){'h4'=>App\Boletas\SummaryTransport::class,'h5b'=>App\BoletaNotes\SummaryTransport::class,'void'=>App\Voids\Transport::class});
         $r=match($action){'send'=>$t->send($p['id'],$p['scenario']??'accepted'),'poll'=>$t->poll($p['id'],$p['scenario']??'0'),'recover'=>$t->recover($p['id'])};}

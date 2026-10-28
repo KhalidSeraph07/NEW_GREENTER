@@ -62,6 +62,9 @@ final class SummaryTransport
                 $this->event($summary, 'ticket_missing_no_recovery', $job->token, [], true);
                 return $summary;
             }
+            if(app(\App\Corrections\Policy::class)->queryExhausted('h4',$id,$job->poll_attempts)){
+                $this->event($summary,'c2_query_budget_exhausted',$job->token,[],true);return $summary;
+            }
             $this->verify($summary);
             $this->change($summary, $job, 'pending', 'awaiting', 'manual_query_rearmed', [], false,
                 ['cycle_attempts' => 0, 'available_at' => now('UTC')]);

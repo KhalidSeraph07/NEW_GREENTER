@@ -35,4 +35,8 @@ final class Policy
         $link=DB::table(Family::LINKS[$family])->where('successor_id',$record->id)->first();if(!$link){return;}
         $this->verifyLinked($family,$record);$this->window($family,Family::record($family,$record->user_id,$link->original_id),$link->operation_date);
     }
+    public function queryExhausted(string $family,string $id,int $attempts): bool
+    {
+        return $attempts>=9 && DB::table(Family::LINKS[$family])->where('successor_id',$id)->exists();
+    }
 }

@@ -52,4 +52,22 @@ final class InterruptionTest extends WorkerCase
         $this->assertFalse((Family::MODELS[$f])::query()->where('user_id',$this->operator->id)->where('idempotency_key',$input['idempotency_key'])->exists());
         $this->assertSame($before,$r->fresh()->getRawOriginal());$n=$this->child($f,$r,$input);$this->assertSame($n->id,$this->child($f,$r,$input)->id);
     }
+    #[DataProvider('families')]
+    public function test_database_result_failure_preserves_receipt_and_never_repeats_send(string $f): void
+    {
+        $r=$this->root($f);$n=$this->child($f,$r);$name='c2_failure_'.str_replace('-','',\Illuminate\Support\Str::uuid());$table=Family::TABLES[$f];
+        $state=$f==='invoice'?'transport_status':'state';$accepted=$f==='invoice'?'simulated_accepted':'sim_accepted';
+        DB::unprepared("CREATE FUNCTION $name() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN IF NEW.id = ''$n->id'' AND NEW.$state = ''$accepted'' THEN RAISE EXCEPTION ''C2_RESULT_FAILURE''; END IF; RETURN NEW; END'");
+        DB::unprepared("CREATE TRIGGER $name BEFORE UPDATE ON $table FOR EACH ROW EXECUTE FUNCTION $name()");
+        try{
+            if($f==='invoice'){app(\App\Invoices\SimulatedTransport::class)->dispatch($n->id);}
+            else{$t=$this->transport($f);$t->send($n->id);$t->poll($n->id);}
+            $this->fail('Fallo SQL no disparado.');
+        }catch(\Illuminate\Database\QueryException){$this->assertSame('processing',DB::table(Family::OUTBOX[$f])->where(Family::COLUMN[$f],$n->id)->value('status'));}
+        finally{DB::unprepared("DROP TRIGGER $name ON $table");DB::unprepared("DROP FUNCTION $name()");}
+        $this->travel(6)->minutes();
+        if($f==='invoice'){$t=app(\App\Invoices\SimulatedTransport::class);$this->assertNull($t->dispatch($n->id));$this->assertSame('simulated_accepted',$t->recover($n->id)->transport_status);}
+        else{$t=$this->transport($f);$this->assertNull($t->send($n->id));$t->recover($n->id);$this->assertSame('sim_accepted',$t->poll($n->id)->state);}
+        $this->assertSame(1,DB::table(Family::OUTBOX[$f])->where(Family::COLUMN[$f],$n->id)->value($f==='invoice'?'attempts':'send_attempts'));
+    }
 }
