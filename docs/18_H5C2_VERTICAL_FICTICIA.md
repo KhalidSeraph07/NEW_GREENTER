@@ -1,6 +1,6 @@
-# H5-C2 — entrega ficticia para revisión, sin cierre ni fusión
+# H5-C2 — cerrado formalmente con observaciones, exclusivamente ficticio
 
-28/10/2026 · America/Lima. Rama `codex/h5c2-correcciones-ficticias`, [PR Draft #6](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/6), base main `e9eaa18fb0dd844c46fde788778cd21de034e6ed`. H5-A/B/C1 siguen cerrados con observaciones; H5 global incompleto. H6 y toda comunicación/identidad/certificado/credencial fiscal real siguen prohibidos.
+28/10/2026 · America/Lima. **Cierre aprobado expresamente por el propietario**, sobre `3454135de66c9f885ba6a452ba405f40430bfd30`, del [PR #6](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/6), trabajado en `codex/h5c2-correcciones-ficticias`, base main `e9eaa18fb0dd844c46fde788778cd21de034e6ed`. PR marcado Ready for Review y fusionado mediante merge commit `affa679045833dda5ee12149bbfc813396639cdf`. H5-A/B/C1 siguen cerrados con observaciones; **H5 global no cerrado**. H6 y toda comunicación/identidad/certificado/credencial fiscal real siguen prohibidos. No se declara producto preparado para producción.
 
 La preparación [17](17_H5C2_PREPARACION_TECNICA.md) se publicó en `b5453ae` antes del código. Autorización AGENTS en commit separado `35f23e2`, sin alterar las trece reglas. El anexo `65c12f6`, también previo al código, conserva el contrato ZIP ficticio heredado de factura H2.
 
@@ -75,4 +75,12 @@ Preservación: el comando `tests/h5c2-preservation.php before` usa creación exc
 | Bloqueo durante firma, huérfanos, operación y restauración — H6/H7, técnico + operador | Firma sigue dentro de transacción; detectar/preservar huérfanos no sustituye operación y restauración probada. Sin borrado automático ni cambios preventivos en motores aprobados. |
 | Licencia XMldsig — propietario + asesoría competente | Resolver discrepancia y avisos antes de distribuir. Composer/audit y CI no prueban compatibilidad jurídica comercial. |
 
-Propuesta: revisar esta entrega y sus diferencias antes de decidir cierre exclusivamente ficticio con observaciones. No se declara H5-C2 ni H5 cerrado, no se fusiona el PR ni se autoriza H6.
+## Registro formal de cierre y fusión
+
+El propietario aprobó H5-C2 con observaciones y autorizó fusionar el PR #6 sobre el HEAD exacto `3454135de66c9f885ba6a452ba405f40430bfd30`. Aceptó 384 pruebas / 2.390 aserciones, 26 comprobaciones H1 y 71 controles HTTP, así como el parche MIME acotado. Revalidación previa: árbol local limpio, HEAD remoto idéntico, [CI Push 40756439233](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40756439233) y [CI PR 40756449661](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40756449661) completed/success, ambos checks exitosos, mergeable/clean, sin solicitudes de revisión, revisiones ni hilos pendientes. La aprobación humana consta en la instrucción del propietario; no se inventa una revisión formal en GitHub.
+
+PR marcado Ready for Review y fusionado mediante [merge commit `affa679045833dda5ee12149bbfc813396639cdf`](https://github.com/KhalidSeraph07/NEW_GREENTER/commit/affa679045833dda5ee12149bbfc813396639cdf), sin squash ni rebase, con condición de HEAD exacto. Padres: main `e9eaa18fb0dd844c46fde788778cd21de034e6ed` y el commit aprobado. Se comprobó igualdad de árboles entre el merge y el HEAD revisado. [CI posterior al merge 40758097232](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40758097232); su resultado y el del registro documental posterior se verifican antes del informe final, con evidencias separadas en `storage/audit/h5c2/cierre/`.
+
+Este cierre actualiza solo documentación. No modifica código, migraciones, dependencias, infraestructura, bases ni evidencias históricas; tampoco ejecuta pruebas locales que agreguen fixtures. La regresión se comprueba en el runner aislado de GitHub. Se conservan todos los responsables/puertas de la tabla anterior, los **65 candidatos huérfanos**, la **fixture terminal inválida**, la **causa no establecida de la omisión de enumeración** y la **restauración integral aún no demostrada**. Técnico y operador deben abordar estos pendientes en H7 y antes de operación real; conservar/detectar/leer hashes no equivale a limpiar ni restaurar.
+
+**H5-C2 cerrado no equivale a H5 global cerrado.** Solo se prepara la [matriz de aceptación global H5](19_H5_MATRIZ_ACEPTACION_GLOBAL.md) para aprobación expresa posterior. H6 y todas las comunicaciones/identidades/certificados/credenciales fiscales reales continúan sin autorización.
