@@ -25,7 +25,20 @@ foreach (['emisor_h1', 'emisor_h2_test'] as $database) {
         }
     }
 }
-foreach (['app', 'framework/testing/h2', 'framework/testing/h4', 'framework/testing/h5', 'audit/h2', 'audit/h3', 'audit/h4', 'audit/h4-d07', 'audit/h5-preparacion-20261026', 'audit/h5a', 'framework/testing/h5b', 'audit/h5b', 'audit/h5c-preparacion', 'framework/testing/h5c1', 'audit/h5c1', 'audit/h5c-preparacion'] as $directory) {
+if (($argv[1] ?? '') === 'after') {
+    // Comparar cada ruta protegida, sin depender de que una nueva enumeracion del montaje la liste.
+    $protected = json_decode(file_get_contents(storage_path('audit/h5c2/preservation-before.json')), true, flags: JSON_THROW_ON_ERROR);
+    foreach ($protected['files'] as $relative => $hash) {
+        if (str_starts_with($relative, '/') || str_contains($relative, '..') || str_contains($relative, '\\')) { throw new RuntimeException('Ruta del baseline invalida.'); }
+        $filePath = storage_path($relative); $ancestor = $filePath;
+        while ($ancestor !== storage_path()) {
+            if (is_link($ancestor)) { throw new RuntimeException('Ruta protegida enlazada: '.$relative); }
+            $ancestor = dirname($ancestor);
+        }
+        if (!is_file($filePath)) { throw new RuntimeException('Evidencia previa ausente: '.$relative); }
+        $snapshot['files'][$relative] = hash_file('sha256', $filePath);
+    }
+} else foreach (['app', 'framework/testing/h2', 'framework/testing/h4', 'framework/testing/h5', 'audit/h2', 'audit/h3', 'audit/h4', 'audit/h4-d07', 'audit/h5-preparacion-20261026', 'audit/h5a', 'framework/testing/h5b', 'audit/h5b', 'audit/h5c-preparacion', 'framework/testing/h5c1', 'audit/h5c1', 'audit/h5c-preparacion'] as $directory) {
     $root = storage_path($directory);
     if (!is_dir($root)) { continue; }
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)) as $file) {
