@@ -1,6 +1,6 @@
-# H5-C1 — bajas ficticias (implementado, revisión y cierre pendientes)
+# H5-C1 — bajas ficticias cerradas con observaciones
 
-Autorización expresa del propietario: RA para 01/07/08 F y RC/3 para 03/07/08 B propios, aceptados ficticiamente y con no otorgamiento acreditado. H5-A/B siguen cerrados. H5-C2 (correcciones, reemisión, liberación de reservas), H6 y comunicaciones fiscales reales no autorizados. Rama `codex/h5c1-bajas-ficticias`; PR Draft, sin fusión automática.
+Autorización expresa del propietario: RA para 01/07/08 F y RC/3 para 03/07/08 B propios, aceptados ficticiamente y con no otorgamiento acreditado. H5-A/B siguen cerrados. H5-C2 (correcciones, reemisión, liberación de reservas), H6 y comunicaciones fiscales reales no autorizados. Implementación revisada en `codex/h5c1-bajas-ficticias`; cierre y fusión del PR #5 aprobados expresamente el 28/10/2026, según registro final.
 
 ## Regla temporal documentada antes de programar
 
@@ -19,13 +19,13 @@ RC/3 utiliza identidad propia de cada CPE y operación 3, importes originales co
 1. Preparación fiscal y preservación: regla anterior, decisiones separadas, snapshot de BD/archivos antes de migrar; ningún histórico reescrito.
 2. Elegibilidad y preparación: afirmaciones de otorgamiento auditables, desconocido bloquea, fechas acreditadas, una reserva por documento, identidad/miembros/manifest inmutables, firma/ZIP privados y outbox en la misma transacción. Bloquear originales con notas y carreras baja/nota/otorgamiento.
 3. Transporte exclusivamente local: un envío como máximo, ticket ficticio, consultas acotadas 98/0/99, constancia ficticia íntegra y correlacionada, incertidumbre sin reenvío; rechazo mantiene documento y reserva. Sin recuperación por UUID cuando falta ticket.
-4. Verificación: negativos, firmas, concurrencia, idempotencia, SIGKILL antes/después del commit, plazos acreditados, preservación, regresión H1–H5-B y CI remoto. Resultados/commit/PR se añadirán con evidencia real.
+4. Verificación: negativos, firmas, concurrencia, idempotencia, SIGKILL antes/después del commit, plazos acreditados, preservación, regresión H1–H5-B y CI remoto. Resultados/commit/PR acreditados en las secciones siguientes.
 
 Pendientes conservados: B-01 y elegibilidad/PSE/validación fiscal (profesional tributario + representante, antes de actividad real); seguridad/autenticación local, operación/respaldos en H6/H7 (técnico + propietario); licencia XMldsig antes de distribución. H5-C2 exige autorización posterior. No declarar H5 global completo.
 
 ## Resultado revisable
 
-[PR #5 Draft](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/5), base main `b434e80083f83e2ddbfec480ac0e53d2834545f6`. Política previa `0a34978`; implementación/pruebas `8caaf4a3fc09c12f11c41ba6d5e70812ca7b32b6`. CI [Push 40443842595](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40443842595) y [PR 40443875907](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40443875907) **exitosos**, logs inspeccionados: **276 pruebas / 1.880 aserciones**, incluidas **57 / 460 nuevas H5-C1**; H1 **26** y HTTP anterior **71**, todos satisfactorios. Composer audit sin avisos conocidos al ejecutar; no cubre defectos inéditos ni resuelve licencia.
+[PR #5, posteriormente fusionado por autorización expresa](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/5), base main `b434e80083f83e2ddbfec480ac0e53d2834545f6`. Política previa `0a34978`; implementación/pruebas `8caaf4a3fc09c12f11c41ba6d5e70812ca7b32b6`. CI [Push 40443842595](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40443842595) y [PR 40443875907](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40443875907) **exitosos**, logs inspeccionados: **276 pruebas / 1.880 aserciones**, incluidas **57 / 460 nuevas H5-C1**; H1 **26** y HTTP anterior **71**, todos satisfactorios. Composer audit sin avisos conocidos al ejecutar; no cubre defectos inéditos ni resuelve licencia.
 
 Diferencias: módulo `app/Voids`, dos migraciones aditivas, `VoidBatch`, configuración fija ficticia y CLI `h5c1:process`. Se comparte el correlativo RC ya existente; RA tiene contador propio. No se altera ningún documento/RC histórico para darlo de baja: el efecto se deriva de una nueva comunicación aceptada. Guardias de una línea, después del replay de H5-A/B, y triggers impiden NC/ND incompatibles con no otorgamiento/reserva de baja. Es una integración requerida por la nueva carrera; sin refactorizar los motores ni cambiar Composer, Docker o infraestructura.
 
@@ -51,8 +51,16 @@ CLI: `grant --user=<operador> --input=<JSON>` admite solo `kind`, `id`, `state`,
 | B-01, regla 2957/modalidad/vigencia, elegibilidad/PSE y plazos reales — profesional fiscal + representante | Antes de actividad fiscal real; no confundir intersección propia con norma. Desde 2027 bloquear nueva preparación/envío hasta revalidación. |
 | Otorgamiento — representante + técnico | Solo afirmación explícita de ensayo con procedencia; no integra entrega real ni reconstruye históricos. Resolver acreditación real antes de habilitar bajas reales. |
 | Rechazo de RA/RC, correcciones, reemisión y reservas — propietario + fiscal + técnico | H5-C2 sin autorización. Sin liberación/reenvío; H5 global incompleto. |
-| Firma dentro de transacción, huérfanos y operación/respaldos — técnico + propietario | H6/H7 y antes de operación real, conservando puertas anteriores; detección no equivale a limpieza o recuperación integral. |
+| Firma dentro de transacción, huérfanos, operación, respaldo y restauración probada — técnico + propietario | H7 y antes de operación real, conservando puertas anteriores; detección/preservación no equivale a limpieza, restauración de respaldos o recuperación integral demostradas. |
 | Autenticación exclusivamente local y seguridad — técnico + propietario | H6 antes de exposición/despliegue. Sin comunicaciones SUNAT/Beta/producción ni certificados/credenciales reales. |
 | Discrepancia/avisos XMldsig — propietario + revisión de licencia | Antes de distribución; no resuelta por CI ni por esta vertical. |
 
-**Propuesta:** revisión técnica y posterior cierre de H5-C1 con observaciones, solo por confirmación expresa del propietario. PR permanece Draft, sin fusión; H5-A/B cerrados, H5 global abierto, H5-C2/H6 no autorizados. La POC no acredita XSD/fiscalidad integral, CDR oficial ni aceptación SUNAT.
+## Registro formal de cierre y fusión
+
+**H5-C1 cerrado formalmente con observaciones por aprobación expresa del propietario el 28/10/2026**, sobre el HEAD `e55974b0c64614ebcccbccf5e1eae95715c821dd`. Revalidación previa: HEAD local/remoto exacto, árbol limpio, sin commits nuevos/conflictos, mergeable/clean, [CI Push 40444678857](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40444678857) y [CI PR 40444682428](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40444682428) completed/success y ambos checks aprobados. Resultados aceptados: 276 pruebas/1.880 aserciones, H1 26 y HTTP 71 satisfactorios. El cierre se registró primero en el PR para conservar intacto el commit aprobado.
+
+PR #5 marcado Ready for Review y fusionado mediante [merge commit `1debea20a0960c3712b57dd7d4438ff151ff6eb2`](https://github.com/KhalidSeraph07/NEW_GREENTER/commit/1debea20a0960c3712b57dd7d4438ff151ff6eb2), sin squash ni rebase. Padres: main `b434e80083f83e2ddbfec480ac0e53d2834545f6` y el HEAD aprobado. Se verificó igualdad exacta de árboles entre el merge y el commit revisado. El registro posterior en main es exclusivamente documental, sin modificar código funcional, dependencias, infraestructura ni datos/evidencias históricos locales. No se ejecutan pruebas locales que agreguen fixtures durante este cierre; la regresión posterior se verifica en el entorno aislado de GitHub Actions.
+
+CI del merge: [40734375786](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40734375786). El CI del commit documental posterior se identifica por su SHA en Actions; ambos resultados se verifican antes del informe final. Se conservan íntegros los pendientes de la tabla anterior y sus responsables/puertas; ninguno se declara resuelto por el cierre ficticio.
+
+**H5-C1 cerrado NO significa H5 completo.** H5-A/B siguen cerrados; H5-C2 (corrección de RA/RC rechazados, reemisión de facturas y liberación de reservas) y H6 no autorizados. Continúan prohibidas comunicaciones SUNAT/Beta/producción e identidades/certificados/credenciales fiscales reales. La POC no acredita restauración integral, XSD/fiscalidad completa, CDR oficial ni aceptación SUNAT.

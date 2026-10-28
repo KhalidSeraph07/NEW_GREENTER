@@ -1,6 +1,6 @@
 # H5-C — preparación fiscal y decisiones pendientes
 
-**Preparación aprobada con condiciones; solo H5-C1 autorizado posteriormente.** Corte: 26/10/2026, America/Lima. Base `b434e80083f83e2ddbfec480ac0e53d2834545f6`. H5-A/B cerrados; H5 global incompleto. SEE-Del contribuyente previsto, condicionado a elegibilidad/PSE. Bajas ficticias en H5-C1; correcciones/reemisión en H5-C2 sin autorización. La aplicación fiscal real sigue pendiente.
+**Preparación aprobada con condiciones; H5-C1 cerrado con observaciones por decisión posterior del 28/10/2026.** Corte: 26/10/2026, America/Lima. Base `b434e80083f83e2ddbfec480ac0e53d2834545f6`. H5-A/B cerrados; H5 global incompleto. SEE-Del contribuyente previsto, condicionado a elegibilidad/PSE. Bajas ficticias en H5-C1; correcciones/reemisión en H5-C2 sin autorización. La aplicación fiscal real sigue pendiente.
 
 | Procedimiento | Confirmado oficialmente | Recorte V1 propuesto / riesgo |
 |---|---|---|
@@ -44,4 +44,4 @@ Pruebas futuras: otorgado/no otorgado/desconocido; D+7/D+8 y vigencia 2026/2027;
 - **S8:** [Manual del programador SUNAT](https://cpe.sunat.gob.pe/sites/default/files/inline-files/manual_programador%20%281%29.pdf), §§2.4–2.7 y 4.1, pp. 15–24 y 28–29 (revisión y reenvío según tipo de respuesta).
 - **S9/S10:** [RS 000048-2026](https://www.sunat.gob.pe/legislacion/superin/2026/000048-2026.pdf), art. 9, p. 28; [RS 000143-2026](https://www.sunat.gob.pe/legislacion/superin/2026/000143-2026.pdf), art. 3.4, p. 3: vigencia diferida.
 
-Copias/huellas de esta revisión en `storage/audit/h5c-preparacion/fuentes.json`. Solo se descargaron documentos públicos; sin WSDL/SOAP, credenciales ni llamadas fiscales. Pendientes H6/H7, elegibilidad/PSE y licencia XMldsig permanecen con sus responsables y puertas anteriores. **El propietario aprobó el recorte condicionado: H5-C1 autorizado según [regla previa y entregas](16_H5C1_BAJAS_FICTICIAS.md); H5-C2 no autorizado. H5 global no cerrado.**
+Copias/huellas de esta revisión en `storage/audit/h5c-preparacion/fuentes.json`. Solo se descargaron documentos públicos; sin WSDL/SOAP, credenciales ni llamadas fiscales. Pendientes H6/H7, elegibilidad/PSE y licencia XMldsig permanecen con sus responsables y puertas anteriores. **El propietario aprobó el recorte condicionado: H5-C1 cerrado con observaciones y PR #5 fusionado por aprobación expresa según [regla previa, entregas y registro de cierre](16_H5C1_BAJAS_FICTICIAS.md); H5-C2 no autorizado. H5 global no cerrado.**
