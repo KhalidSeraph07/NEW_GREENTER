@@ -53,6 +53,7 @@ final class Preparation
                     $this->files->verify($prior); $this->original->verify($prior);
                     return $prior;
                 }
+                app(\App\Voids\Grant::class)->assertNoteAllowed('invoice', $invoice->id);
                 $this->original->eligible($invoice);
                 if (InvoiceNote::query()->where('original_id', $invoice->id)->exists()) { throw new ConflictHttpException('Original ya reservado por una nota; no se libera automaticamente.'); }
                 if ($v['emission_date'] < substr($invoice->snapshot['emitted_at'], 0, 10)
