@@ -10,7 +10,8 @@ final class IntegrityTest extends CaseBase
     public static function families(): array {return PreparationTest::families();}
     private function blocked(callable $attack): void
     {
-        try{DB::transaction($attack);$this->fail('SQL indebido permitido.');}catch(QueryException){$this->assertTrue(true);}
+        try{DB::transaction($attack);$this->fail('SQL indebido permitido.');}
+        catch(\PDOException $e){$this->assertContains((string)$e->getCode(),['P0001','23503','23505','23514']);}
     }
     #[DataProvider('families')]
     public function test_signed_successor_and_negative_signature_and_zip_identity(string $f): void
