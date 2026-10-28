@@ -3,6 +3,11 @@
 require __DIR__.'/../vendor/autoload.php';
 $app = require __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+// Laravel registra un handler global que puede imprimir el error sin un exit != 0 en este script CLI.
+set_exception_handler(static function (Throwable $error): void {
+    fwrite(STDERR, ($error->getFile() === __FILE__ ? $error->getMessage() : 'Fallo de preservacion; revisar el entorno privado.').PHP_EOL);
+    exit(1);
+});
 if (!app()->environment('local') || config('database.connections.pgsql.host') !== 'postgres') {
     throw new RuntimeException('Preservacion solo Compose ficticio.');
 }
