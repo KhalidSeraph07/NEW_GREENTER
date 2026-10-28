@@ -65,7 +65,7 @@ final class Policy
                 && $job->phase==='poll' && $event && $event->token===$job->token
                 && Original::hash(json_decode($event->payload,true,flags:JSON_THROW_ON_ERROR))===Original::hash($response);
         }
-        if(!$valid || $job->status!=='completed' || (bool)$event->attention===$accepted || Original::hash($actual)!==Original::hash($expected)){
+        if(!$valid || $job->status!=='completed' || (bool)$event->attention===$accepted || !is_array($actual) || Original::hash($actual)!==Original::hash($expected)){
             throw new ConflictHttpException('Estado terminal C2 sin resultado completo y correlacionado; conservar e investigar.');
         }
     }
