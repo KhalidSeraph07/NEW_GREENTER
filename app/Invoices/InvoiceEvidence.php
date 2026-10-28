@@ -31,7 +31,7 @@ final class InvoiceEvidence
             }
             $zip = new ZipArchive();
             if ($zip->open($directory.'/'.self::FILES['zip'], ZipArchive::CREATE | ZipArchive::EXCL) !== true
-                || !$zip->addFromString('invoice.xml', $contents['xml']) || !$zip->close()) {
+                || !$zip->addFromString(\App\Corrections\PackingDefect::entry('invoice.xml'), $contents['xml']) || !$zip->close()) {
                 throw new RuntimeException('No se pudo conservar el ZIP.');
             }
             chmod($directory.'/'.self::FILES['zip'], 0600);

@@ -36,6 +36,7 @@ final class SimulatedTransport
             if ($invoice->transport_status !== $expected || ($job->status === 'pending' && $job->attempts !== 0)) {
                 throw new LogicException('Estados inconsistentes: operacion detenida.');
             }
+            app(\App\Corrections\Policy::class)->beforeSend('invoice',$invoice);
             $this->verify($invoice);
             $token = (string) Str::uuid();
             DB::table('invoice_outbox')->where('id', $job->id)->update([
@@ -146,6 +147,7 @@ final class SimulatedTransport
 
     private function verify(Invoice $invoice): void
     {
+        app(\App\Corrections\Policy::class)->verifyLinked('invoice',$invoice);
         foreach (['unsigned', 'xml', 'zip', 'certificate'] as $kind) {
             $this->evidence->verifiedPath($invoice->id, $kind, $invoice->artifacts);
         }

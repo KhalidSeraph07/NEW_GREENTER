@@ -38,7 +38,7 @@ final class Original
             || !$receipt || $receipt->ticket !== $rc->ticket || $receipt->request_hash !== $rc->artifacts['zip']['sha256']
             || DB::table('h4_outbox')->where('summary_id', $rc->id)->value('status') !== 'completed') { $this->fail(); }
         $members = $rc->snapshot['members'];
-        $ids = DB::table('h4_members')->where('summary_id', $rc->id)->orderBy('position')->pluck('boleta_id')->all();
+        $ids = DB::table('h4_members')->where('summary_id', \App\Corrections\Family::anchor('h4', $rc->id))->orderBy('position')->pluck('boleta_id')->all();
         if ($ids !== array_column($members, 'id')) { $this->fail(); }
         $member = array_values(array_filter($members, fn ($m) => $m['id'] === $b->id));
         $expected = ['id' => $b->id, 'number' => $b->number, 'emission_date' => $b->emission_date,
@@ -78,7 +78,7 @@ final class Original
         $id = DB::table('h4_members')->where('boleta_id', $b->id)->value('summary_id');
         $rc = $id ? DailySummary::query()->find($id) : null;
         if (!$rc) { $this->fail(); }
-        return $rc;
+        return \App\Corrections\Family::effective('h4', $rc);
     }
 
     private function fail(): never { throw new ConflictHttpException('Boleta o RC aceptado ficticio no correlacionado; detener e investigar.'); }

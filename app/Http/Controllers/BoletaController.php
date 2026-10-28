@@ -40,10 +40,14 @@ final class BoletaController
     private function show(Request $request, string $kind, string $id)
     {
         $record = $this->owned($request, $kind, $id);
+        $membership=null;
+        if($kind==='boleta'){
+            $root=DB::table('h4_members')->where('boleta_id',$id)->value('summary_id');
+            if($root){$rc=\App\Corrections\Family::effective('h4',\App\Corrections\Family::record('h4',$request->user()->id,$root));$membership=(object)['summary_id'=>$rc->id,'state'=>$rc->state];}
+        }
         return view('boletas.show', ['record' => $record, 'kind' => $kind,
             'events' => $kind === 'rc' ? DB::table('h4_events')->where('summary_id', $id)->orderBy('id')->get() : [],
-            'membership' => $kind === 'boleta' ? DB::table('h4_members')->join('h4_summaries', 'h4_summaries.id', '=', 'h4_members.summary_id')
-                ->where('boleta_id', $id)->first(['h4_members.summary_id', 'h4_summaries.state']) : null]);
+            'membership' => $membership]);
     }
 
     public function process(Request $request, string $id, SummaryTransport $transport)

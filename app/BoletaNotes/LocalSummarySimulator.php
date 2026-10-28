@@ -14,7 +14,7 @@ use RuntimeException;
 class LocalSummarySimulator
 {
     public const SEND = ['accepted', 'lost_ticket', 'incomplete', 'wrong_hash', 'duplicate', 'exception'];
-    public const POLL = ['98', '0', '99', 'timeout', 'incomplete', 'wrong_hash', 'wrong_member', 'wrong_ticket', 'wrong_rc', 'non_simulated', 'doctype'];
+    public const POLL = ['98', '0', '99', '99_c2_zip', 'timeout', 'incomplete', 'wrong_hash', 'wrong_member', 'wrong_ticket', 'wrong_rc', 'non_simulated', 'doctype'];
 
     public function send(NoteSummary $summary, string $scenario): array
     {
@@ -37,15 +37,19 @@ class LocalSummarySimulator
         if (!$receipt || $scenario === 'timeout') { return []; }
         $summary = NoteSummary::query()->findOrFail($receipt->summary_id);
         $response = ['simulated' => true, 'source' => 'H5B_LOCAL_FAKE', 'ticket' => $ticket,
-            'statusCode' => $scenario === '98' ? '98' : ($scenario === '99' ? '99' : '0')];
+            'statusCode' => $scenario === '98' ? '98' : (in_array($scenario, ['99','99_c2_zip'], true) ? '99' : '0')];
         if ($scenario === '98') { return $response; }
         if ($scenario === 'incomplete') { return $response; }
         $xml = new DOMDocument('1.0', 'UTF-8');
         $root = $xml->createElement('H5BFictitiousConstancia'); $root->setAttribute('simulated', 'true'); $xml->appendChild($root);
         foreach (['Source' => 'H5B_LOCAL_FAKE', 'SummaryID' => $summary->id, 'RCName' => $summary->name,
             'RequestHash' => $receipt->request_hash, 'Ticket' => $ticket,
-            'Result' => $scenario === '99' ? 'rejected' : 'accepted', 'Message' => 'SIMULACION H5-B SIN CDR OFICIAL'] as $tag => $value) {
+            'Result' => in_array($scenario, ['99','99_c2_zip'], true) ? 'rejected' : 'accepted', 'Message' => 'SIMULACION H5-B SIN CDR OFICIAL'] as $tag => $value) {
             $root->appendChild($xml->createElement($tag, $value));
+        }
+        if ($scenario === '99_c2_zip') {
+            $response['technical_rejection'] = \App\Corrections\PackingDefect::cause('h5b', $summary);
+            $root->appendChild($xml->createElement('TechnicalRejectionHash', \App\Notes\Original::hash($response['technical_rejection'])));
         }
         foreach ($summary->snapshot['members'] as $member) { $root->appendChild($xml->createElement('Member', \App\Notes\Original::hash($member))); }
         if ($scenario === 'wrong_hash') { $root->getElementsByTagName('RequestHash')->item(0)->nodeValue = 'bad'; }

@@ -12,7 +12,7 @@ use RuntimeException;
 // Registro del receptor ficticio, sin representar capacidades oficiales SUNAT.
 class LocalSimulation
 {
-    public const SCENARIOS = ['accepted', 'rejected', 'uncertain', 'communication_error', 'timeout', 'incomplete', 'unexpected_error'];
+    public const SCENARIOS = ['accepted', 'rejected', 'rejected_c2_zip', 'uncertain', 'communication_error', 'timeout', 'incomplete', 'unexpected_error'];
 
     public function exchange(Invoice $invoice, string $scenario): array
     {
@@ -21,7 +21,8 @@ class LocalSimulation
         }
         if ($scenario === 'unexpected_error') { throw new RuntimeException('Fallo no clasificado del simulador.'); }
         if ($scenario === 'uncertain') { return []; }
-        $response = $this->response($invoice, $scenario === 'rejected' ? 'rejected' : 'accepted');
+        $response = $this->response($invoice, in_array($scenario,['rejected','rejected_c2_zip'],true) ? 'rejected' : 'accepted');
+        if ($scenario === 'rejected_c2_zip') { $response['technical_rejection'] = \App\Corrections\PackingDefect::cause('invoice', $invoice); }
         DB::table('simulation_receipts')->insertOrIgnore([
             'invoice_id' => $invoice->id, 'response' => json_encode($response, JSON_THROW_ON_ERROR), 'created_at' => now('UTC'),
         ]);
