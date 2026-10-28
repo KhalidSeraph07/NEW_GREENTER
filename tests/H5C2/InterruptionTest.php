@@ -42,6 +42,17 @@ final class InterruptionTest extends WorkerCase
         }finally{if($w->isRunning()){$w->stop(0,9);}}
     }
     public static function families(): array {return PreparationTest::families();}
+    public function test_late_discarded_acceptance_blocks_correcting_the_original_rejection(): void
+    {
+        $b=app(\App\Boletas\Preparation::class)->issue($this->operator->id,$this->input(['emission_date'=>now()->toDateString()]));
+        $r=app(\App\Corrections\Fixture::class)->prepare('h4',$this->operator->id,['members'=>[$b->id],'idempotency_key'=>(string)\Illuminate\Support\Str::uuid()]);
+        $t=$this->transport('h4');$t->send($r->id);[$workers,$barrier]=$this->launch('poll',[['family'=>'h4','id'=>$r->id]],'h4.poll.responded');$w=$workers[0];
+        try{$this->travel(6)->minutes();$t->recover($r->id);$this->assertSame('sim_rejected',$t->poll($r->id,'99_c2_zip')->state);
+            file_put_contents($barrier.'/release','release');$w->wait();$this->assertTrue($w->isSuccessful(),$w->getErrorOutput());
+            $this->assertSame(1,DB::table('h4_events')->where('summary_id',$r->id)->where('kind','late_response_ignored')->count());
+            $this->expectException(\Symfony\Component\HttpKernel\Exception\ConflictHttpException::class);$this->child('h4',$r->fresh());
+        }finally{if($w->isRunning()){$w->stop(0,9);}}
+    }
     #[DataProvider('families')]
     public function test_failed_persistence_rolls_back_identity_and_outbox_then_same_key_succeeds(string $f): void
     {

@@ -13,6 +13,9 @@ final class Rejection
         Family::guard();Family::verifyFiles($family,$r);
         $col=Family::COLUMN[$family];$job=DB::table(Family::OUTBOX[$family])->where($col,$r->id)->first();
         if(!$job || $job->status!=='completed'){ $this->fail(); }
+        $events=match($family){'invoice'=>'invoice_transport_events','void'=>'h5c1_events',default=>$family.'_events'};
+        // Una respuesta tardia descartada exige investigacion; no convertirla en certeza para otra emision.
+        if(DB::table($events)->where($col,$r->id)->where('kind','late_response_ignored')->exists()){$this->fail();}
         if($family==='invoice'){
             $response=$r->simulated_response;
             if(!isset($response['technical_rejection'])){$this->fail();}
