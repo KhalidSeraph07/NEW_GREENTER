@@ -18,7 +18,7 @@ final class BoletaNoteController
     public function index(Request $r)
     {
         return view('boleta-notes.index', ['boletas' => Boleta::query()->where('user_id', $r->user()->id)
-            ->whereExists(fn ($q) => $q->selectRaw('1')->from('h4_members')->join('h4_summaries','h4_summaries.id','=','h4_members.summary_id')
+            ->whereExists(fn ($q) => $q->selectRaw('1')->from('h4_members')->join('h4_summaries','h4_summaries.id','=',DB::raw("h5c2_effective('h4',h4_members.summary_id)"))
                 ->whereColumn('h4_members.boleta_id','h4_boletas.id')->where('h4_summaries.state','sim_accepted'))
             ->whereNotExists(fn ($q) => $q->selectRaw('1')->from('h5b_notes')->whereColumn('h5b_notes.original_id','h4_boletas.id'))->latest()->limit(50)->get(),
             'notes' => BoletaNote::query()->where('user_id',$r->user()->id)->latest()->limit(50)->get(),
@@ -32,8 +32,10 @@ final class BoletaNoteController
     {
         $record = $this->owned($r,$kind,$id);
         $rc = $kind === 'rc' ? $record : null;
+        $member=$kind==='note'?DB::table('h5b_members')->where('note_id',$id)->first():null;
+        if($member){$root=\App\Corrections\Family::record('h5b',$r->user()->id,$member->summary_id);$member->summary_id=\App\Corrections\Family::effective('h5b',$root)->id;}
         return view('boleta-notes.show', ['record'=>$record,'kind'=>$kind,'rc'=>$rc,
-            'member' => $kind === 'note' ? DB::table('h5b_members')->where('note_id',$id)->first() : null,
+            'member' => $member,
             'events'=>$rc ? DB::table('h5b_events')->where('summary_id',$id)->orderBy('id')->get() : []]);
     }
 

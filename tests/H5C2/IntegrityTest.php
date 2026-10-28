@@ -60,4 +60,19 @@ final class IntegrityTest extends CaseBase
             try{$this->child('invoice',$r,array_replace($input,$change));$this->fail();}catch(\Illuminate\Validation\ValidationException){$this->assertTrue(true);}}
         $this->assertSame(0,DB::table(Family::LINKS['invoice'])->where('original_id',$r->id)->count());
     }
+    public static function communications(): array {return [['h4'],['h5b'],['void']];}
+    #[DataProvider('communications')]
+    public function test_plausible_result_without_committed_event_is_rejected_by_deferred_sql_guard(string $f): void
+    {
+        $r=$this->root($f);$n=$this->child($f,$r);$t=$this->transport($f);$ticket=$t->send($n->id)->ticket;
+        $response=match($f){'h4'=>app(\App\Boletas\LocalSummarySimulator::class)->poll($ticket,'0'),
+            'h5b'=>app(\App\BoletaNotes\LocalSummarySimulator::class)->poll($ticket,'0'),'void'=>app(\App\Voids\LocalSimulator::class)->poll($ticket,'0')};
+        $this->blocked(function()use($f,$n,$response){
+            DB::table(Family::TABLES[$f])->where('id',$n->id)->update(['state'=>'querying']);
+            DB::table(Family::OUTBOX[$f])->where(Family::COLUMN[$f],$n->id)->update(['status'=>'completed']);
+            DB::table(Family::TABLES[$f])->where('id',$n->id)->update(['state'=>'sim_accepted','result'=>json_encode(['simulated'=>true,'official_cdr'=>false,'outcome'=>'accepted','response'=>$response])]);
+        });
+        $this->assertSame('awaiting',$n->fresh()->state);$this->assertNull($n->fresh()->result);
+        $this->assertSame('sim_accepted',$t->poll($n->id)->state);
+    }
 }
