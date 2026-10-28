@@ -7,6 +7,7 @@
         <testsuite name="H5-A ficticio"><directory>tests/H5A</directory></testsuite>
         <testsuite name="H5-B ficticio"><directory>tests/H5B</directory></testsuite>
         <testsuite name="H5-C1 ficticio"><directory>tests/H5C1</directory></testsuite>
+        <testsuite name="H5-C2 ficticio"><directory>tests/H5C2</directory></testsuite>
     </testsuites>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
