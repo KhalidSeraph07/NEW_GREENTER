@@ -36,6 +36,13 @@ abstract class TestCase extends LaravelTestCase
         ]);
     }
 
+    protected function signIn(string $email, string $password): static
+    {
+        $this->get('/login')->assertOk();
+        $this->post('/login', ['email'=>$email, 'password'=>$password, '_token'=>session()->token()])->assertRedirect('/');
+        return $this;
+    }
+
     protected function input(array $overrides = []): array
     {
         return $overrides + [

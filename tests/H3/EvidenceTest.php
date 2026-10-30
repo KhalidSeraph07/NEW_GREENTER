@@ -19,7 +19,7 @@ final class EvidenceTest extends TestCase
         $invoice = $this->issue();
         $transport = app(SimulatedTransport::class);
         $transport->dispatch($invoice->id, 'communication_error');
-        $this->withBasicAuth($this->operator->email, $this->password);
+        $this->signIn($this->operator->email, $this->password);
         foreach (['/', '/invoices/'.$invoice->id] as $url) {
             $this->get($url)->assertOk()->assertSee('Reintento local seguro pendiente')->assertDontSee('Simulación incierta');
         }
