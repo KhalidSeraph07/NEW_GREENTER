@@ -89,7 +89,9 @@ check('historical_boleta_rc_still_accepted', status == 200 and b'sim_accepted' i
 status, _, b_url = request('/boletas', {'_token': csrf, 'idempotency_key': str(uuid.uuid4()), 'description': 'ORIGINAL H5B HTTP',
                                       'quantity': '1', 'unit_price': '100', 'emission_date': date})
 b_id = b_url.rsplit('/', 1)[1]
-status, _, b_rc = request('/summaries', {'_token': csrf, 'idempotency_key': str(uuid.uuid4()), 'members': [b_id]}, json_body=True)
+b_rc_payload = {'_token': csrf, 'idempotency_key': str(uuid.uuid4()), 'members': [b_id]}
+assert request('/summaries/review', b_rc_payload, json_body=True)[0] == 200, 'review H4 RC before freeze'
+status, _, b_rc = request('/summaries', b_rc_payload, json_body=True)
 b_action = '/summaries/' + b_rc.rsplit('/', 1)[1] + '/simulate'
 request(b_action, {'_token': csrf, 'action': 'send'})
 request(b_action, {'_token': csrf, 'action': 'poll', 'scenario': '0'})
