@@ -37,7 +37,7 @@ check('config_has_no_post', request('/settings', {'_token': csrf})[0] == 405)
 check('logout_requires_csrf', request('/logout', {})[0] == 419)
 jar = next(h.cookiejar for h in opener.handlers if hasattr(h, 'cookiejar'))
 cookies = list(jar)
-check('session_cookie_http_only_same_site', any(c.has_nonstandard_attr('HttpOnly') and c.get_nonstandard_attr('SameSite', '').lower() == 'lax' for c in cookies))
+check('session_cookie_http_only_same_site', any('httponly' in {k.lower(): v for k, v in c._rest.items()} and {k.lower(): v for k, v in c._rest.items()}.get('samesite', '').lower() == 'lax' for c in cookies))
 saved = http.cookiejar.CookieJar()
 for cookie in cookies:
     saved.set_cookie(copy.copy(cookie))
