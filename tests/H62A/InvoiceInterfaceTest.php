@@ -61,12 +61,18 @@ final class InvoiceInterfaceTest extends TestCase
     {
         $owner=$this->newOperator();$n=app(InvoiceIssuer::class)->issue($owner->id,$this->input());
         app(SimulatedTransport::class)->dispatch($n->id,'timeout');
-        $this->operator->role=$role;$this->operator->save();$this->signInOperator();
-        $this->get('/invoices/'.$n->id)->assertNotFound();
-        $this->post('/invoices/'.$n->id.'/recover')->assertNotFound();
-        $this->post('/invoices/'.$n->id.'/simulate',['scenario'=>'accepted'])->assertNotFound();
-        $this->get('/invoices/'.$n->id.'/evidence/xml')->assertNotFound();
-        $this->assertSame('simulation_uncertain',$n->fresh()->transport_status);$this->assertSame(1,$this->job($n->id)->attempts);
+        $this->operator->role=$role;$this->operator->save();
+        try {
+            $this->signInOperator();
+            $this->get('/invoices/'.$n->id)->assertNotFound();
+            $this->post('/invoices/'.$n->id.'/recover')->assertNotFound();
+            $this->post('/invoices/'.$n->id.'/simulate',['scenario'=>'accepted'])->assertNotFound();
+            $this->get('/invoices/'.$n->id.'/evidence/xml')->assertNotFound();
+            $this->assertSame('simulation_uncertain',$n->fresh()->transport_status);$this->assertSame(1,$this->job($n->id)->attempts);
+        } finally {
+            // Esta cuenta de prueba es nueva; no dejar ADMIN que condicione otros ensayos.
+            $this->operator->role='OPERADOR';$this->operator->save();
+        }
     }
     public function test_timeout_recovery_shows_stored_attempts_and_events_without_resending(): void
     {
