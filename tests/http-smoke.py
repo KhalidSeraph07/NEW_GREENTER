@@ -87,6 +87,8 @@ payload = {
 without_csrf = {key: value for key, value in payload.items() if key != "_token"}
 status, _, _ = request("/invoices", without_csrf)
 check("csrf_419_without_test_bypass", status == 419)
+status, body, _ = request("/invoices/review", payload)
+assert status == 200 and b"29.50" in body and b"no se ha creado una factura" in body, "server review before preparation"
 status, body, invoice_url = request("/invoices", payload)
 check("invoice_created_2950", status == 200 and b"29.50" in body and b"Pendiente de simulaci" in body)
 invoice_path = urllib.parse.urlsplit(invoice_url).path

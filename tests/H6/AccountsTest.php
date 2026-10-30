@@ -76,7 +76,7 @@ final class AccountsTest extends TestCase
     public function test_admin_operates_only_own_invoice_and_operator_cannot_assign_role_or_owner(): void
     {
         $admin=$this->account();$this->signIn($admin->email,$this->newPassword);
-        $this->post('/invoices',$this->input())->assertStatus(303);
+        $input=$this->input();$this->reviewInvoice($input)->post('/invoices',$input)->assertStatus(303);
         $own=\App\Models\Invoice::query()->where('user_id',$admin->id)->latest()->firstOrFail();
         $this->temporaryEvidence[]=$own->id;
         $this->get('/invoices/'.$own->id)->assertOk();

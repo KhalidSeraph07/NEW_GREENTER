@@ -43,6 +43,12 @@ abstract class TestCase extends LaravelTestCase
         return $this;
     }
 
+    protected function reviewInvoice(array $input): static
+    {
+        $this->post('/invoices/review', $input)->assertOk();
+        return $this;
+    }
+
     protected function input(array $overrides = []): array
     {
         return $overrides + [
