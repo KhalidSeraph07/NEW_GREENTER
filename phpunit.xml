@@ -9,6 +9,7 @@
         <testsuite name="H5-C1 ficticio"><directory>tests/H5C1</directory></testsuite>
         <testsuite name="H5-C2 ficticio"><directory>tests/H5C2</directory></testsuite>
         <testsuite name="H6-1 acceso local"><directory>tests/H6</directory></testsuite>
+        <testsuite name="H6-2A facturas interfaz"><directory>tests/H62A</directory></testsuite>
     </testsuites>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>

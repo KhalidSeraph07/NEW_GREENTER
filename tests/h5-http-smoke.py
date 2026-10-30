@@ -60,8 +60,11 @@ check('uncertain_no_resend', status == 200 and b'<strong>uncertain</strong>' in 
 status, body, _ = request(note_path + '/simulate', {'_token': csrf, 'action': 'recover'})
 check('local_fake_query_recovers', status == 200 and b'sim_accepted' in body and b'H5A_LOCAL_FAKE' in body and b'Sin CDR oficial' in body)
 
-status, _, invoice_url = request('/invoices', {'_token': csrf, 'idempotency_key': str(uuid.uuid4()),
-    'description': 'ORIGINAL FICTICIO ND H5-A', 'quantity': '1', 'unit_price': '100'})
+invoice_input = {'_token': csrf, 'idempotency_key': str(uuid.uuid4()),
+    'description': 'ORIGINAL FICTICIO ND H5-A', 'quantity': '1', 'unit_price': '100'}
+status, _, _ = request('/invoices/review', invoice_input)
+assert status == 200
+status, _, invoice_url = request('/invoices', invoice_input)
 invoice_path = '/invoices/' + invoice_url.rsplit('/', 1)[1]
 status, _, _ = request(invoice_path + '/simulate', {'_token': csrf, 'scenario': 'accepted'})
 debit = payload | {'idempotency_key': str(uuid.uuid4()), 'original_id': invoice_url.rsplit('/', 1)[1],

@@ -11,6 +11,8 @@ set_exception_handler(static function (Throwable $error): void {
 if (!app()->environment('local') || config('database.connections.pgsql.host') !== 'postgres') {
     throw new RuntimeException('Preservacion solo Compose ficticio.');
 }
+$scope = $argv[2] ?? 'h6-1';
+if (!in_array($scope, ['h6-1','h6-2a'], true)) { throw new RuntimeException('Ámbito de preservación no permitido.'); }
 $snapshot = ['rows' => [], 'files' => []];
 foreach (['emisor_h1', 'emisor_h2_test'] as $database) {
     config(['database.connections.pgsql.database' => $database]);
@@ -21,7 +23,7 @@ foreach (['emisor_h1', 'emisor_h2_test'] as $database) {
         if (!Illuminate\Support\Facades\Schema::hasTable($table)) { continue; }
         foreach (Illuminate\Support\Facades\DB::table($table)->get() as $row) {
             // H6 añade columnas; los atributos históricos de las cuentas deben seguir intactos.
-            if ($table === 'users') { unset($row->role, $row->is_active); }
+            if ($table === 'users' && $scope === 'h6-1') { unset($row->role, $row->is_active); }
             $id = $row->original_id ?? $row->id ?? ($row->document_id ?? ($row->boleta_id ?? ($row->note_id ?? ($row->batch_id ?? ($row->summary_id ?? $row->invoice_id)))));
             $snapshot['rows'][$database][$table][$id] = hash('sha256', json_encode($row, JSON_THROW_ON_ERROR));
         }
@@ -29,7 +31,7 @@ foreach (['emisor_h1', 'emisor_h2_test'] as $database) {
 }
 if (($argv[1] ?? '') === 'after') {
     // Comparar cada ruta protegida, sin depender de que una nueva enumeracion del montaje la liste.
-    $protected = json_decode(file_get_contents(storage_path('audit/h6-1/preservation-before.json')), true, flags: JSON_THROW_ON_ERROR);
+    $protected = json_decode(file_get_contents(storage_path('audit/'.$scope.'/preservation-before.json')), true, flags: JSON_THROW_ON_ERROR);
     foreach ($protected['files'] as $relative => $hash) {
         if (str_starts_with($relative, '/') || str_contains($relative, '..') || str_contains($relative, '\\')) { throw new RuntimeException('Ruta del baseline invalida.'); }
         $filePath = storage_path($relative); $ancestor = $filePath;
@@ -40,7 +42,7 @@ if (($argv[1] ?? '') === 'after') {
         if (!is_file($filePath)) { throw new RuntimeException('Evidencia previa ausente: '.$relative); }
         $snapshot['files'][$relative] = hash_file('sha256', $filePath);
     }
-} else foreach (['app', 'framework/testing/h2', 'framework/testing/h4', 'framework/testing/h5', 'audit/h2', 'audit/h3', 'audit/h4', 'audit/h4-d07', 'audit/h5-preparacion-20261026', 'audit/h5a', 'framework/testing/h5b', 'audit/h5b', 'audit/h5c-preparacion', 'framework/testing/h5c1', 'audit/h5c1', 'audit/h5c-preparacion'] as $directory) {
+} else foreach (['app', 'framework/testing/h2', 'framework/testing/h4', 'framework/testing/h5', 'audit/h2', 'audit/h3', 'audit/h4', 'audit/h4-d07', 'audit/h5-preparacion-20261026', 'audit/h5a', 'framework/testing/h5b', 'audit/h5b', 'audit/h5c-preparacion', 'framework/testing/h5c1', 'audit/h5c1', 'audit/h5c-preparacion', 'audit/h6-1'] as $directory) {
     $root = storage_path($directory);
     if (!is_dir($root)) { continue; }
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)) as $file) {
@@ -56,7 +58,7 @@ if (($argv[1] ?? '') === 'before' && is_file(storage_path('audit/h5c2/preservati
         $snapshot['files'][$relative] = $hash;
     }
 }
-$directory = storage_path('audit/h6-1');
+$directory = storage_path('audit/'.$scope);
 if (!is_dir($directory)) { mkdir($directory, 0700, true); }
 $path = $directory.'/preservation-before.json';
 if (($argv[1] ?? '') === 'before') {

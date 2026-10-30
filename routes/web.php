@@ -35,6 +35,9 @@ Route::middleware('h2.operator')->group(function () {
     Route::get('/h4/{kind}/{id}/evidence/{file}', [BoletaController::class, 'download'])->name('h4.download');
     Route::get('/', [InvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/invoices/review', [InvoiceController::class, 'review'])->name('invoices.review');
+    Route::post('/invoices/edit-review', [InvoiceController::class, 'editReview'])->name('invoices.edit-review');
+    Route::post('/invoices/{invoice}/recover', [InvoiceController::class, 'recover'])->name('invoices.recover');
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
     Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
     Route::post('/invoices/{invoice}/simulate', [InvoiceController::class, 'simulate'])->name('invoices.simulate');

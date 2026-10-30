@@ -20,7 +20,8 @@ final class AccessTest extends TestCase
     {
         $this->signIn($this->operator->email, $this->password)
             ->get('/invoices/create')->assertOk()->assertSee('Sin validez fiscal')->assertSee('name="_token"', false);
-        $this->post('/invoices', $this->input())->assertStatus(303);
+        $input = $this->input();
+        $this->reviewInvoice($input)->post('/invoices', $input)->assertStatus(303);
         $this->get('/')->assertOk()->assertSee('118.00')->assertSee('Pendiente de simulación');
     }
 
@@ -52,7 +53,7 @@ final class AccessTest extends TestCase
         $this->signIn($this->operator->email, $this->password);
         $this->postJson('/invoices', $this->input(['total_cents' => 1]))->assertUnprocessable();
         $input = $this->input();
-        $this->post('/invoices', $input)->assertStatus(303);
+        $this->reviewInvoice($input)->post('/invoices', $input)->assertStatus(303);
         $input['unit_price'] = '101.00';
         $this->postJson('/invoices', $input)->assertConflict();
     }
