@@ -75,7 +75,8 @@ status, xml, _ = request('/h4/rc/'+rid+'/evidence/xml'); digest = hashlib.sha256
 status, body, _ = request(action, {'_token':csrf, 'action':'send'})
 check('ticket_is_only_transport_not_result', status == 200 and b'SIM-H4-' in body and b'Sin resultado definitivo confirmado' in body and b'id="send_scenario"' not in body)
 status, body, _ = request(action, {'_token':csrf, 'action':'poll', 'scenario':'98'})
-check('98_retains_wait_and_blocks_early_poll', status == 200 and b'query_98' in body and request(action, {'_token':csrf, 'action':'poll','scenario':'0'}, json_body=True)[0] == 409)
+# El bloqueo antes del plazo se prueba con reloj controlado en PHP; la latencia HTTP puede superar los cinco segundos.
+check('98_retains_wait_without_fiscal_result', status == 200 and b'query_98' in body and b'awaiting' in body and b'Sin resultado definitivo confirmado' in body)
 time.sleep(5.2)
 status, body, _ = request(action, {'_token':csrf, 'action':'poll','scenario':'timeout'})
 check('uncertain_query_blocks_resend', status == 200 and b'Resultado incierto' in body and request(action, {'_token':csrf, 'action':'send'}, json_body=True)[0] == 409)
