@@ -15,10 +15,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 p = argparse.ArgumentParser()
 p.add_argument('--output-dir', type=Path, required=True)
+p.add_argument('--focused', action='store_true', help='Solo H2 y H6-2B; CI mantiene la cadena completa.')
 args = p.parse_args()
 args.output_dir.mkdir(parents=True, exist_ok=False)
-sys.argv = [str(ROOT/'tests/h62a-http-smoke.py'), '--output-dir', str(args.output_dir/'legacy')]
-legacy = runpy.run_path(str(ROOT/'tests/h62a-http-smoke.py'))
+if args.focused:
+    sys.argv = [str(ROOT/'tests/http-smoke.py'), '--report', str(args.output_dir/'h2.json')]
+    legacy = runpy.run_path(str(ROOT/'tests/http-smoke.py'))
+    previous_checks = 13
+else:
+    sys.argv = [str(ROOT/'tests/h62a-http-smoke.py'), '--output-dir', str(args.output_dir/'legacy')]
+    legacy = runpy.run_path(str(ROOT/'tests/h62a-http-smoke.py'))
+    previous_checks = 100
 request, Inputs = legacy['request'], legacy['Inputs']
 checks = {}
 
@@ -28,8 +35,8 @@ class Forms(HTMLParser):
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
         if tag == 'form':
-            self.current = urllib.parse.urlsplit(a.get('action', '')).path
-            self.forms[self.current] = {}
+            self.current = urllib.parse.urlsplit(a.get('action', '')).path if a.get('method', 'get').lower() == 'post' else None
+            if self.current is not None: self.forms[self.current] = {}
         elif self.current is not None and tag == 'input' and a.get('name'):
             if a.get('type') != 'checkbox':
                 self.forms[self.current][a['name']] = a.get('value', '')
@@ -81,6 +88,6 @@ check('terminal_actions_blocked', all(request(action, {'_token':csrf,'action':a}
 status, data, _ = request('/h4/rc/'+rid+'/evidence/zip')
 with zipfile.ZipFile(io.BytesIO(data)) as z:
     check('private_zip_preserves_original_signed_xml', status == 200 and z.read(z.namelist()[0]) == xml and hashlib.sha256(request('/h4/rc/'+rid+'/evidence/xml')[1]).hexdigest() == digest)
-result = {'scope':'H6-2B PRIMERA ENTREGA FICTICIA LOCAL SIN SUNAT', 'boleta_url':boleta_url, 'rc_url':rc_url, 'legacy_checks':100, 'checks':checks, 'xml_sha256':digest}
+result = {'scope':'H6-2B PRIMERA ENTREGA FICTICIA LOCAL SIN SUNAT', 'boleta_url':boleta_url, 'rc_url':rc_url, 'legacy_checks':previous_checks, 'checks':checks, 'xml_sha256':digest}
 (args.output_dir/'result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
 print(json.dumps(result))
