@@ -7,7 +7,7 @@ final class ReaderTest extends CaseBase
     public function test_existing_form_and_document_links_use_effective_rc_but_history_stays_rejected(): void
     {
         $r=$this->root('h4');$n=$this->child('h4',$r);$id=$r->snapshot['members'][0]['id'];$t=$this->transport('h4');$t->send($n->id);$t->poll($n->id);
-        $this->withBasicAuth($this->operator->email,$this->password)->get('/receipt-notes')->assertOk()->assertSee('B000-'.$r->snapshot['members'][0]['number']);
+        $this->signIn($this->operator->email,$this->password)->get('/receipt-notes')->assertOk()->assertSee('B000-'.$r->snapshot['members'][0]['number']);
         $this->get('/boletas/'.$id)->assertOk()->assertSee('sim_accepted')->assertSee('/summaries/'.$n->id);
         $this->get('/summaries/'.$r->id)->assertOk()->assertSee('sim_rejected');
         $this->assertSame($r->id,DB::table('h4_members')->where('boleta_id',$id)->value('summary_id'));

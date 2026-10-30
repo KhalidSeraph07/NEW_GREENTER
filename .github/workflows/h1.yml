@@ -1,4 +1,4 @@
-name: H1 a H5-C2 ficticios sin SUNAT
+name: H1 a H6-1 ficticios sin SUNAT
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -72,7 +72,7 @@ jobs:
             if curl -s -o /dev/null http://127.0.0.1:8180/; then break; fi
             sleep 1
           done
-          python3 tests/h5b-http-smoke.py --output-dir storage/audit/h5b/http-ci
+          python3 tests/h6-http-smoke.py --output-dir storage/audit/h6-1/http-ci
           docker compose run --rm php php tests/h5c2-preservation.php after
       - name: Estado y parada sin borrar volúmenes
         if: always()

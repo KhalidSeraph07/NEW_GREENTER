@@ -10,7 +10,7 @@ final class AccessTest extends TestCase
 {
     public function test_minimum_ui_creates_receipt_freezes_rc_and_only_reports_a_simulated_result(): void
     {
-        $this->withBasicAuth($this->operator->email, $this->password)->get('/boletas')->assertOk()->assertSee('H4')->assertSee('Sin validez fiscal');
+        $this->signIn($this->operator->email, $this->password)->get('/boletas')->assertOk()->assertSee('H4')->assertSee('Sin validez fiscal');
         $input = $this->input(['emission_date' => now()->toDateString()]);
         $receipt = app(Preparation::class)->issue($this->operator->id, $input);
         $this->post('/boletas', $input)->assertRedirectToRoute('boletas.show', $receipt->id);
@@ -31,7 +31,7 @@ final class AccessTest extends TestCase
         $other = $this->newOperator();
         $receipt = app(Preparation::class)->issue($other->id, $this->input(['emission_date' => now()->toDateString()]));
         $summary = app(Preparation::class)->freeze($other->id, ['idempotency_key' => (string) Str::uuid(), 'members' => [$receipt->id]]);
-        $this->withBasicAuth($this->operator->email, $this->password);
+        $this->signIn($this->operator->email, $this->password);
         $this->get('/boletas/'.$receipt->id)->assertNotFound();
         $this->get('/summaries/'.$summary->id)->assertNotFound();
         $this->get('/h4/rc/'.$summary->id.'/evidence/xml')->assertNotFound();
@@ -43,7 +43,7 @@ final class AccessTest extends TestCase
     public function test_csrf_and_unsupported_operations_remain_blocked(): void
     {
         $this->app->instance('env', 'local');
-        $this->withBasicAuth($this->operator->email, $this->password)->post('/boletas', [])->assertStatus(419);
+        $this->signIn($this->operator->email, $this->password)->post('/boletas', [])->assertStatus(419);
         $this->post('/summaries', [])->assertStatus(419);
         $this->get('/h4/boleta/'.Str::uuid().'/evidence/private-key')->assertNotFound();
         $this->get('/storage/app/private/h4/test.xml')->assertNotFound();

@@ -4,7 +4,17 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\BoletaController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/login', [\App\Http\Controllers\SessionController::class, 'create'])->name('login');
+Route::post('/login', [\App\Http\Controllers\SessionController::class, 'store'])->name('login.store');
+
 Route::middleware('h2.operator')->group(function () {
+    Route::post('/logout', [\App\Http\Controllers\SessionController::class, 'destroy'])->name('logout');
+    Route::view('/settings', 'settings')->name('settings');
+    Route::middleware('h2.operator:ADMIN')->group(function () {
+        Route::get('/accounts', [\App\Http\Controllers\AccountController::class, 'index'])->name('accounts.index');
+        Route::post('/accounts', [\App\Http\Controllers\AccountController::class, 'store'])->name('accounts.store');
+        Route::post('/accounts/{id}/deactivate', [\App\Http\Controllers\AccountController::class, 'deactivate'])->name('accounts.deactivate');
+    });
     Route::get('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'index'])->name('receipt-notes.index');
     Route::post('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'issue'])->name('receipt-notes.store');
     Route::post('/note-summaries', [\App\Http\Controllers\BoletaNoteController::class, 'freeze'])->name('receipt-notes.freeze');

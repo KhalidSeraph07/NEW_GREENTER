@@ -1,5 +1,4 @@
 """Ensayo HTTP real, restringido a loopback y datos ficticios. No imprime credenciales."""
-import base64
 import argparse
 import hashlib
 import http.cookiejar
@@ -24,13 +23,11 @@ for line in (ROOT / ".env").read_text(encoding="utf-8-sig").splitlines():
 port = int(env.get("H2_HOST_PORT", "8180"))
 assert 1024 <= port <= 65535
 BASE = f"http://127.0.0.1:{port}"
-credential = base64.b64encode(
-    ("operador.h2@example.invalid:" + env["H2_OPERATOR_PASSWORD"]).encode()
-).decode()
 opener = urllib.request.build_opener(
     urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar())
 )
 checks = {}
+logged_in = False
 
 
 class Inputs(HTMLParser):
@@ -46,20 +43,28 @@ class Inputs(HTMLParser):
 
 
 def request(path, data=None, authenticated=True, json_body=False, host=None):
+    global logged_in
+    if authenticated and not logged_in:
+        login_form = opener.open(BASE + '/login', timeout=30).read()
+        login = urllib.parse.urlencode({'_token': Inputs(login_form).values['_token'],
+            'email': 'operador.h2@example.invalid', 'password': env['H2_OPERATOR_PASSWORD']}).encode()
+        response = opener.open(urllib.request.Request(BASE + '/login', login), timeout=30)
+        assert urllib.parse.urlsplit(response.geturl()).path == '/', 'session login failed'
+        logged_in = True
     headers = {}
-    if authenticated:
-        headers["Authorization"] = "Basic " + credential
+    if not authenticated:
+        headers['Accept'] = 'application/json'
     if host:
         headers["Host"] = host
     if json_body:
         headers["Content-Type"] = "application/json"
         headers["Accept"] = "application/json"
-        payload = json.dumps(data).encode()
+        payload = json.dumps(data).encode() if data is not None else None
     else:
         payload = urllib.parse.urlencode(data).encode() if data is not None else None
     message = urllib.request.Request(BASE + path, payload, headers)
     try:
-        response = opener.open(message, timeout=30)
+        response = (opener if authenticated else urllib.request.build_opener()).open(message, timeout=30)
     except urllib.error.HTTPError as error:
         return error.code, error.read(), error.geturl()
     return response.status, response.read(), response.geturl()

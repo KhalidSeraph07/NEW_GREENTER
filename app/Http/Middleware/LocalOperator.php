@@ -1,34 +1,26 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 final class LocalOperator
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ?string $role = null)
     {
-        abort_unless(app()->environment(['local', 'testing']), 503, 'H2 solo funciona en ensayo local.');
-        abort_unless(in_array($request->getHost(), ['127.0.0.1', 'localhost'], true), 400, 'Host local no permitido.');
-        $key = 'h2-basic:'.$request->ip();
-        if (RateLimiter::tooManyAttempts($key, 10)) {
-            abort(429, 'Demasiados intentos de acceso. Espera un minuto.');
+        // Leer el estado actual incluso con una sesión anterior a la desactivación.
+        $user = $request->user()?->fresh();
+        if (!$user || !$user->is_active || !in_array($user->role, User::ROLES, true)) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            if ($request->expectsJson()) { abort(401, 'Inicia sesión con una cuenta activa.'); }
+            return redirect()->route('login');
         }
-        try {
-            Auth::onceBasic();
-        } catch (UnauthorizedHttpException $exception) {
-            RateLimiter::hit($key, 60);
-            throw $exception;
-        }
-        RateLimiter::clear($key);
-        $response = $next($request);
-        $response->headers->set('Cache-Control', 'no-store, private');
-        $response->headers->set('X-Content-Type-Options', 'nosniff');
-        $response->headers->set('Content-Security-Policy', "default-src 'self'; style-src 'self' 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
-        return $response;
+        Auth::setUser($user);
+        abort_if($role !== null && $user->role !== $role, 403, 'Operación reservada a ADMIN.');
+        return $next($request);
     }
 }
