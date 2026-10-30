@@ -1,6 +1,6 @@
-# H5 — matriz de aceptación global propuesta, sin cierre global
+# H5 — cierre global aprobado con observaciones, exclusivamente ficticio
 
-28/10/2026 · America/Lima. Preparada **después** de fusionar el PR #6 mediante `affa679045833dda5ee12149bbfc813396639cdf`. H5-A, H5-B, H5-C1 y H5-C2 están cerrados con observaciones por decisiones expresas; **la aceptación global H5 sigue pendiente del propietario**. Base: Plan Maestro §5/H5 y RP-04/RP-05, precisados por D-02/AF-06 y los recortes aprobados. Matriz documental: no amplía funcionalidades, reabre código ni revalida normativa. No acredita producto listo para producción.
+29/10/2026 · America/Lima. **El propietario aprobó expresamente el cierre global H5 con observaciones**, exclusivamente dentro del alcance ficticio de esta matriz sobre la base `aadb6f8721b5b04105e3bb8862265003da4e8f13`. Quedan aceptadas H5-A, H5-B, H5-C1 y H5-C2; sus cierres y pendientes se conservan. La matriz fue preparada después del merge del PR #6 `affa679045833dda5ee12149bbfc813396639cdf`. Base: Plan Maestro §5/H5 y RP-04/RP-05, precisados por D-02/AF-06 y los recortes aprobados. Matriz documental: no amplía funcionalidades, reabre código ni revalida normativa. No acredita producto listo para producción.
 
 ## Casos implementados y aceptación del ensayo
 
@@ -15,9 +15,11 @@
 | H5-C2: reemisión manual de factura 01 rechazada | Nueva identidad/correlativo, misma operación/economía y causa subsanada; fecha de operación de ensayo explícita, ventana original y vínculo inmutable. Nunca se recicla el número rechazado. | H5-C2; una sucesora; no reemisión individual de notas/boletas. |
 | Negativos e integridad transversales | Bloquear ajenos/incompatibles, aceptados para corrección, pendientes, inciertos, ticket perdido, constancias incompletas y rechazo sin causa admisible; no nueva sucesora ante respuesta tardía descartada. Identidad/huellas/historiales preservados; concurrencia, idempotencia, SIGKILL, SQL adversarial y fallos de persistencia. | Regresión remota aceptada: **384 pruebas / 2.390 aserciones**, H1 26 y HTTP 71; [CI del HEAD revisado](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40756449661). No equivale a CDR o validación SUNAT. |
 
+Los CI finales verificados del [merge `affa679`](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40758097232) y de la [base aprobada `aadb6f8`](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/40758763349) concluyeron exitosamente: **384 pruebas, 2.390 aserciones, 26 comprobaciones H1 y 71 controles HTTP** en ambos. El CI posterior al registro documental se verifica por separado y se enlaza en el informe final; no se atribuye a esta aprobación una ejecución futura.
+
 ## Exclusiones y diferimientos: no confundir su alcance
 
-| Fuera del recorte aprobado | Tipo y consecuencia para la aceptación global propuesta |
+| Fuera del recorte aprobado | Tipo y consecuencia para el cierre global aprobado |
 |---|---|
 | Motivos distintos de NC 01 / ND 02, parciales y saldos de múltiples notas | Exclusión inicial aprobada D-02/AF-06 y H5-A/B; no aceptar silenciosamente operaciones no soportadas. Una necesidad del emisor real exige decisión y validación fiscal previa. |
 | Motor general, edición de históricos, rectificación general de RC aceptados, múltiples sucesoras/cadenas y liberación de reservas | Exclusiones expresas de H5-C2. Rechazo de la sucesora queda bloqueado; no constituye solución operativa universal ni autorización de anulación. |
@@ -38,6 +40,6 @@
 | Respaldo/recuperación integral y restauración verificable de BD, archivos y material necesario | Técnico + operador + propietario | H7 y antes de operación real: demostrar restauración coherente y recuperación; preservación, CI o detección de huérfanos no la sustituyen. |
 | Acceso local/HTTP Basic, permisos/aislamiento, firma dentro de transacción, incidentes y operación segura | Técnico + propietario | H6/H7, previa autorización y antes de exposición/uso real. Sin rediseños o refactorizaciones preventivas durante este cierre. |
 | Discrepancia/avisos de licencia XMldsig | Propietario + asesoría competente | Antes de distribución. El parche MIME ya aceptado y Composer Audit no resuelven esta cuestión. |
-| Aceptación global H5 y posteriores autorizaciones | Propietario | Decisión expresa sobre esta matriz; mantener H5 global sin cerrar hasta recibirla. H6 y comunicaciones/datos/certificados/credenciales fiscales reales siguen prohibidos. |
+| Aceptación global H5 y posteriores autorizaciones | Propietario | Cierre global H5 ficticio aprobado expresamente el 29/10/2026 sobre `aadb6f8721b5b04105e3bb8862265003da4e8f13`. H6, H7, H8 y comunicaciones/identidades/certificados/credenciales fiscales reales siguen sin autorización; requieren decisiones posteriores expresas. |
 
-**Decisión solicitada:** aprobar o no el cierre global de **H5 exclusivamente ficticio, con este recorte y observaciones**, sin declarar cobertura fiscal completa, producto listo para producción ni autorización de H6. Cualquier alcance adicional requiere decisión separada; esta matriz no inicia su implementación.
+**Registro final:** H5 queda **cerrado como hito exclusivamente ficticio con observaciones**, por aprobación expresa del propietario. Se conservan todas las exclusiones, observaciones, responsables y puertas anteriores, incluidos los 65 candidatos huérfanos, la fixture terminal inválida, la causa no establecida de la omisión de enumeración y la restauración integral no demostrada. Este registro no declara cumplimiento fiscal real, homologación SUNAT, aptitud para producción ni cobertura tributaria universal. **H6, H7 y H8 no están autorizados.** Continúan prohibidas las comunicaciones SUNAT/Beta/producción y las identidades, certificados y credenciales fiscales reales. No se inicia trabajo adicional ni se modifican código, dependencias, migraciones, infraestructura, datos o evidencias históricas.
