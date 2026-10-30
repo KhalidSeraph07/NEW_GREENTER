@@ -56,7 +56,7 @@ with zipfile.ZipFile(io.BytesIO(compressed)) as z:
 status, body, _ = request(note_path + '/simulate', {'_token': csrf, 'action': 'dispatch', 'scenario': 'timeout'})
 check('timeout_uncertain_not_accepted', status == 200 and b'<strong>uncertain</strong>' in body and b'<strong>sim_accepted</strong>' not in body)
 status, body, _ = request(note_path + '/simulate', {'_token': csrf, 'action': 'dispatch'})
-check('uncertain_no_resend', status == 200 and b'<strong>uncertain</strong>' in body)
+check('uncertain_no_resend', status == 409 and b'<strong>uncertain</strong>' in request(note_path)[1])
 status, body, _ = request(note_path + '/simulate', {'_token': csrf, 'action': 'recover'})
 check('local_fake_query_recovers', status == 200 and b'sim_accepted' in body and b'H5A_LOCAL_FAKE' in body and b'Sin CDR oficial' in body)
 
