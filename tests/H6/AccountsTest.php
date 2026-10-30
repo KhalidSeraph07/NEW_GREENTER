@@ -8,9 +8,16 @@ use Tests\TestCase;
 
 final class AccountsTest extends TestCase
 {
+    private array $temporaryEvidence = [];
     private string $newPassword = 'H6-Only-Local-Password-4826';
     protected function setUp(): void { parent::setUp(); DB::beginTransaction(); }
-    protected function tearDown(): void { DB::rollBack(); parent::tearDown(); }
+    protected function tearDown(): void
+    {
+        DB::rollBack();
+        // Solo artefactos nuevos de estas pruebas de cuentas, nunca el inventario histórico.
+        foreach ($this->temporaryEvidence as $id) { app(\App\Invoices\InvoiceEvidence::class)->discardUncommitted($id); }
+        parent::tearDown();
+    }
     private function account(string $role='ADMIN'): User
     {
         return app(LocalAccounts::class)->create($this->values($role));
@@ -49,7 +56,7 @@ final class AccountsTest extends TestCase
     }
     public function test_only_admin_can_manage_accounts_but_cannot_read_or_operate_foreign_documents(): void
     {
-        $document=$this->issue();$admin=$this->account();
+        $document=$this->issue();$this->temporaryEvidence[]=$document->id;$admin=$this->account();
         $this->signIn($this->operator->email,$this->password);
         $this->get('/accounts')->assertForbidden();$this->post('/accounts',$this->values('ADMIN'))->assertForbidden();
         $this->post('/accounts/'.$admin->id.'/deactivate')->assertForbidden();
@@ -71,6 +78,7 @@ final class AccountsTest extends TestCase
         $admin=$this->account();$this->signIn($admin->email,$this->newPassword);
         $this->post('/invoices',$this->input())->assertStatus(303);
         $own=\App\Models\Invoice::query()->where('user_id',$admin->id)->latest()->firstOrFail();
+        $this->temporaryEvidence[]=$own->id;
         $this->get('/invoices/'.$own->id)->assertOk();
         $this->signIn($this->operator->email,$this->password);
         $this->postJson('/invoices',$this->input(['user_id'=>$admin->id,'role'=>'ADMIN']))->assertUnprocessable();
