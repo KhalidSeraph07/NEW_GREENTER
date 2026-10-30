@@ -28,6 +28,8 @@ Route::middleware('h2.operator')->group(function () {
     Route::get('/invoice-notes/{id}/evidence/{kind}', [\App\Http\Controllers\InvoiceNoteController::class, 'download'])->name('notes.download');
     Route::get('/boletas', [BoletaController::class, 'index'])->name('boletas.index');
     Route::post('/boletas', [BoletaController::class, 'issue'])->name('boletas.store');
+    Route::post('/summaries/review', [BoletaController::class, 'review'])->name('summaries.review');
+    Route::post('/summaries/edit-review', [BoletaController::class, 'editReview'])->name('summaries.edit-review');
     Route::post('/summaries', [BoletaController::class, 'freeze'])->name('summaries.store');
     Route::get('/boletas/{id}', [BoletaController::class, 'showBoleta'])->name('boletas.show');
     Route::get('/summaries/{id}', [BoletaController::class, 'showSummary'])->name('summaries.show');

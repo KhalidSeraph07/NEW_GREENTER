@@ -42,12 +42,15 @@ status, xml, _ = request('/h4/boleta/' + receipt_id + '/evidence/xml')
 root = ET.fromstring(xml)
 check('xml_03_private', status == 200 and root.find('{urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2}InvoiceTypeCode').text == '03')
 rc_payload = {'_token': csrf, 'idempotency_key': str(uuid.uuid4()), 'members': [receipt_id]}
+assert request('/summaries/review', rc_payload, json_body=True)[0] == 200, 'review before freeze'
 status, body, rc_url = request('/summaries', rc_payload, json_body=True)
 rc_id = rc_url.rsplit('/', 1)[1]
 check('rc_frozen_with_member', status == 200 and b'pending_send' in body and receipt_id.encode() in body)
 status, _, replay = request('/summaries', rc_payload, json_body=True)
 check('rc_replay', status == 200 and replay == rc_url)
-status, _, _ = request('/summaries', rc_payload | {'idempotency_key': str(uuid.uuid4())}, json_body=True)
+duplicate_rc = rc_payload | {'idempotency_key': str(uuid.uuid4())}
+assert request('/summaries/review', duplicate_rc, json_body=True)[0] == 409, 'reserved member rejected at review'
+status, _, _ = request('/summaries', duplicate_rc, json_body=True)
 check('duplicate_membership_409', status == 409)
 action = '/summaries/' + rc_id + '/simulate'
 status, body, _ = request(action, {'_token': csrf, 'action': 'send'})
@@ -68,14 +71,18 @@ check('h4_evidence_not_public', status == 404)
 payload['idempotency_key'] = str(uuid.uuid4())
 status, _, lost_receipt_url = request('/boletas', payload)
 lost_receipt = lost_receipt_url.rsplit('/', 1)[1]
-status, _, lost_url = request('/summaries', {'_token': csrf, 'idempotency_key': str(uuid.uuid4()), 'members': [lost_receipt]}, json_body=True)
+lost_payload = {'_token': csrf, 'idempotency_key': str(uuid.uuid4()), 'members': [lost_receipt]}
+assert request('/summaries/review', lost_payload, json_body=True)[0] == 200, 'review lost-ticket RC'
+status, _, lost_url = request('/summaries', lost_payload, json_body=True)
 lost_action = '/summaries/' + lost_url.rsplit('/', 1)[1] + '/simulate'
 status, body, _ = request(lost_action, {'_token': csrf, 'action': 'send', 'scenario': 'lost_ticket'})
 check('lost_ticket_uncertain', status == 200 and b'uncertain' in body and b'No recibido' in body)
 status, body, _ = request(lost_action, {'_token': csrf, 'action': 'recover'})
-check('lost_ticket_no_lookup_recovery', status == 200 and b'uncertain' in body and b'No recibido' in body)
+lost_status, lost_body, _ = request('/summaries/' + lost_url.rsplit('/', 1)[1])
+check('lost_ticket_no_lookup_recovery', status == 409 and lost_status == 200 and b'uncertain' in lost_body and b'No recibido' in lost_body)
 status, body, _ = request(lost_action, {'_token': csrf, 'action': 'send'})
-check('lost_ticket_no_resend', status == 200 and b'uncertain' in body and b'No recibido' in body)
+lost_status, lost_body, _ = request('/summaries/' + lost_url.rsplit('/', 1)[1])
+check('lost_ticket_no_resend', status == 409 and lost_status == 200 and b'uncertain' in lost_body and b'No recibido' in lost_body)
 report = {'scope': 'H4 LOCAL FICTICIO SIN SUNAT NI CDR OFICIAL', 'h2_checks': len(legacy['checks']),
           'checks': checks, 'receipt_url': receipt_url, 'rc_url': rc_url, 'lost_ticket_rc_url': lost_url}
 (args.output_dir / 'h4.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
