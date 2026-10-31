@@ -15,6 +15,14 @@ Route::middleware('h2.operator')->group(function () {
         Route::post('/accounts', [\App\Http\Controllers\AccountController::class, 'store'])->name('accounts.store');
         Route::post('/accounts/{id}/deactivate', [\App\Http\Controllers\AccountController::class, 'deactivate'])->name('accounts.deactivate');
     });
+    Route::get('/voids', [\App\Http\Controllers\VoidController::class, 'index'])->name('voids.index');
+    Route::post('/voids/grants', [\App\Http\Controllers\VoidController::class, 'recordGrant'])->name('voids.grant');
+    Route::post('/voids/review', [\App\Http\Controllers\VoidController::class, 'review'])->name('voids.review');
+    Route::post('/voids/edit-review', [\App\Http\Controllers\VoidController::class, 'editReview'])->name('voids.edit-review');
+    Route::post('/voids', [\App\Http\Controllers\VoidController::class, 'freeze'])->name('voids.freeze');
+    Route::get('/voids/{id}', [\App\Http\Controllers\VoidController::class, 'show'])->name('voids.show');
+    Route::post('/voids/{id}/simulate', [\App\Http\Controllers\VoidController::class, 'process'])->name('voids.process');
+    Route::get('/voids/{id}/evidence/{kind}', [\App\Http\Controllers\VoidController::class, 'download'])->name('voids.download');
     Route::get('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'index'])->name('receipt-notes.index');
     Route::post('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'issue'])->name('receipt-notes.store');
     Route::post('/note-summaries/review', [\App\Http\Controllers\BoletaNoteController::class, 'review'])->name('receipt-notes.review');
