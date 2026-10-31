@@ -19,7 +19,7 @@
 <body><main>
     <p class="notice"><strong>@yield('milestone', 'H2') · Simulación local · Sin validez fiscal.</strong> No se envía a SUNAT.</p>
     @auth
-    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a><a href="{{ route('boletas.index') }}">Boletas / RC ficticios</a><a href="{{ route('notes.index') }}">Notas de factura ficticias</a><a href="{{ route('receipt-notes.index') }}">Notas de boleta / RC ficticios</a><a href="{{ route('settings') }}">Configuración ficticia</a>@if(auth()->user()->role === 'ADMIN')<a href="{{ route('accounts.index') }}">Cuentas</a>@endif</nav>
+    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a><a href="{{ route('boletas.index') }}">Boletas / RC ficticios</a><a href="{{ route('notes.index') }}">Notas de factura ficticias</a><a href="{{ route('receipt-notes.index') }}">Notas de boleta / RC ficticios</a><a href="{{ route('voids.index') }}">Bajas ficticias</a><a href="{{ route('settings') }}">Configuración ficticia</a>@if(auth()->user()->role === 'ADMIN')<a href="{{ route('accounts.index') }}">Cuentas</a>@endif</nav>
     <form method="post" action="{{ route('logout') }}">@csrf<button>Cerrar sesión</button></form>
     @endauth
     @if ($errors->any())
