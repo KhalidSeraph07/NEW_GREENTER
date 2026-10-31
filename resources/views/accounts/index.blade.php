@@ -4,7 +4,7 @@
 <form method="post" action="{{ route('accounts.store') }}">@csrf
 <label for="name">Nombre</label><input id="name" name="name" value="{{ old('name') }}" required maxlength="120">
 <label for="email">Correo</label><input id="email" type="email" name="email" value="{{ old('email') }}" required>
-<label for="role">Rol fijo</label><select id="role" name="role"><option>OPERADOR</option><option>ADMIN</option></select>
+<label for="role">Rol fijo</label><select id="role" name="role"><option>OPERADOR</option><option>ADMIN</option><option>RECEPTOR</option></select>
 <label for="password">Contraseña inicial (mínimo 16 caracteres, mayúsculas, minúsculas y números)</label><input id="password" type="password" name="password" autocomplete="new-password" required>
 <label for="password_confirmation">Confirmar contraseña</label><input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" required>
 <button>Crear cuenta</button></form>

@@ -20,6 +20,8 @@ final class LocalOperator
             return redirect()->route('login');
         }
         Auth::setUser($user);
+        $allowed = $role === 'RECEPTOR' ? ['RECEPTOR'] : ['ADMIN', 'OPERADOR'];
+        abort_unless(in_array($user->role, $allowed, true), 403, 'Este rol no tiene acceso a esta área.');
         abort_if($role !== null && $user->role !== $role, 403, 'Operación reservada a ADMIN.');
         return $next($request);
     }

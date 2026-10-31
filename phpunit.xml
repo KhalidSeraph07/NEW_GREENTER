@@ -13,6 +13,7 @@
         <testsuite name="H6-2B boletas y RC interfaz"><directory>tests/H62B</directory></testsuite>
         <testsuite name="H6-2B notas interfaz"><directory>tests/H62BNotes</directory></testsuite>
         <testsuite name="H6-3A bajas interfaz"><directory>tests/H63A</directory></testsuite>
+        <testsuite name="H6-4 receptor"><directory>tests/H64</directory></testsuite>
     </testsuites>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>

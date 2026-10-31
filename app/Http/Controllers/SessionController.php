@@ -17,13 +17,13 @@ final class SessionController
         $key = 'h6-login:'.hash('sha256', $request->ip().'|'.$v['email']);
         abort_if(RateLimiter::tooManyAttempts($key, 5), 429, 'Demasiados intentos. Espera un minuto.');
         if (!Auth::attempt(['password'=>$v['password'], 'is_active'=>true,
-            fn ($q) => $q->whereIn('role', ['ADMIN','OPERADOR'])->whereRaw('lower(email) = ?', [$v['email']])], false)) {
+            fn ($q) => $q->whereIn('role', \App\Models\User::ROLES)->whereRaw('lower(email) = ?', [$v['email']])], false)) {
             RateLimiter::hit($key, 60); RateLimiter::hit($ipKey, 60);
             throw ValidationException::withMessages(['email'=>'Credenciales inválidas o cuenta no disponible.']);
         }
         RateLimiter::clear($key);
         $request->session()->regenerate();
-        return redirect()->route('invoices.index');
+        return redirect()->route($request->user()->role === 'RECEPTOR' ? 'recipient.index' : 'invoices.index');
     }
     public function destroy(Request $request)
     {
