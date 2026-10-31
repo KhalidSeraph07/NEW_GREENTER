@@ -17,6 +17,8 @@ Route::middleware('h2.operator')->group(function () {
     });
     Route::get('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'index'])->name('receipt-notes.index');
     Route::post('/receipt-notes', [\App\Http\Controllers\BoletaNoteController::class, 'issue'])->name('receipt-notes.store');
+    Route::post('/note-summaries/review', [\App\Http\Controllers\BoletaNoteController::class, 'review'])->name('receipt-notes.review');
+    Route::post('/note-summaries/edit-review', [\App\Http\Controllers\BoletaNoteController::class, 'editReview'])->name('receipt-notes.edit-review');
     Route::post('/note-summaries', [\App\Http\Controllers\BoletaNoteController::class, 'freeze'])->name('receipt-notes.freeze');
     Route::get('/receipt-notes/{kind}/{id}', [\App\Http\Controllers\BoletaNoteController::class, 'show'])->name('receipt-notes.show');
     Route::post('/note-summaries/{id}/simulate', [\App\Http\Controllers\BoletaNoteController::class, 'process'])->name('receipt-notes.process');

@@ -11,6 +11,7 @@
         <testsuite name="H6-1 acceso local"><directory>tests/H6</directory></testsuite>
         <testsuite name="H6-2A facturas interfaz"><directory>tests/H62A</directory></testsuite>
         <testsuite name="H6-2B boletas y RC interfaz"><directory>tests/H62B</directory></testsuite>
+        <testsuite name="H6-2B notas interfaz"><directory>tests/H62BNotes</directory></testsuite>
     </testsuites>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>

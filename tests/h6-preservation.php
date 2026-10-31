@@ -12,7 +12,7 @@ if (!app()->environment('local') || config('database.connections.pgsql.host') !=
     throw new RuntimeException('Preservacion solo Compose ficticio.');
 }
 $scope = $argv[2] ?? 'h6-1';
-if (!in_array($scope, ['h6-1','h6-2a','h6-2b'], true)) { throw new RuntimeException('Ámbito de preservación no permitido.'); }
+if (!in_array($scope, ['h6-1','h6-2a','h6-2b','h6-2b-notes'], true)) { throw new RuntimeException('Ámbito de preservación no permitido.'); }
 $snapshot = ['rows' => [], 'files' => []];
 foreach (['emisor_h1', 'emisor_h2_test'] as $database) {
     config(['database.connections.pgsql.database' => $database]);
@@ -59,13 +59,14 @@ if (($argv[1] ?? '') === 'before' && is_file(storage_path('audit/h5c2/preservati
     }
 }
 $directory = storage_path('audit/'.$scope);
-if (($argv[1] ?? '') === 'before' && $scope === 'h6-2b') {
-    $prior = json_decode(file_get_contents(storage_path('audit/h6-2a/preservation-before.json')), true, flags: JSON_THROW_ON_ERROR);
+if (($argv[1] ?? '') === 'before' && in_array($scope, ['h6-2b','h6-2b-notes'], true)) {
+    $previous = $scope === 'h6-2b' ? 'h6-2a' : 'h6-2b';
+    $prior = json_decode(file_get_contents(storage_path('audit/'.$previous.'/preservation-before.json')), true, flags: JSON_THROW_ON_ERROR);
     foreach ($prior['files'] as $relative => $hash) {
         if (!is_file(storage_path($relative)) || hash_file('sha256', storage_path($relative)) !== $hash) { throw new RuntimeException('Evidencia H6-2A protegida alterada.'); }
         $snapshot['files'][$relative] = $hash;
     }
-    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(storage_path('audit/h6-2a'), FilesystemIterator::SKIP_DOTS)) as $file) {
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(storage_path('audit/'.$previous), FilesystemIterator::SKIP_DOTS)) as $file) {
         if ($file->isFile() && !$file->isLink()) { $snapshot['files'][substr($file->getPathname(), strlen(storage_path()) + 1)] = hash_file('sha256', $file->getPathname()); }
     }
 }

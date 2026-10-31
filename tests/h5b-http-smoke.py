@@ -58,12 +58,15 @@ check('credit_xml_reference_03', status == 200 and root.tag.endswith('CreditNote
 rc_payload = {'_token': csrf, 'idempotency_key': str(uuid.uuid4()), 'members': [note_id]}
 status, _, _ = request('/note-summaries', {k: v for k, v in rc_payload.items() if k != '_token'}, json_body=True)
 check('rc_csrf_419', status == 419)
+assert request('/note-summaries/review', rc_payload, json_body=True)[0] == 200, 'review note RC before freeze'
 status, body, rc_url = request('/note-summaries', rc_payload, json_body=True)
 check('new_note_rc_pending', status == 200 and b'<strong>pending_send</strong>' in body)
 rc_id = rc_url.rsplit('/', 1)[1]
 status, _, replay = request('/note-summaries', rc_payload, json_body=True)
 check('rc_replay_same_identity', status == 200 and replay == rc_url)
-status, _, _ = request('/note-summaries', rc_payload | {'idempotency_key': str(uuid.uuid4())}, json_body=True)
+duplicate_note_rc = rc_payload | {'idempotency_key': str(uuid.uuid4())}
+assert request('/note-summaries/review', duplicate_note_rc, json_body=True)[0] == 409, 'reserved note rejected at review'
+status, _, _ = request('/note-summaries', duplicate_note_rc, json_body=True)
 check('note_membership_reserved_409', status == 409)
 status, rc_xml, _ = request('/receipt-notes/rc/' + rc_id + '/evidence/xml')
 line = ET.fromstring(rc_xml).find('sac:SummaryDocumentsLine', ns)
@@ -98,14 +101,17 @@ request(b_action, {'_token': csrf, 'action': 'poll', 'scenario': '0'})
 status, body, nd_url = request('/receipt-notes', payload | {'original_id': b_id, 'idempotency_key': str(uuid.uuid4()),
     'operation': 'ND02', 'increment_unit_price': '20.00', 'reason': 'INCREMENTO POSITIVO FICTICIO'})
 check('debit_increment_only_2360', status == 200 and b'23.60' in body and b'Tipo 08 / motivo 02' in body)
-status, _, lost_url = request('/note-summaries', rc_payload | {'idempotency_key': str(uuid.uuid4()), 'members': [nd_url.rsplit('/', 1)[1]]}, json_body=True)
+lost_payload = rc_payload | {'idempotency_key': str(uuid.uuid4()), 'members': [nd_url.rsplit('/', 1)[1]]}
+assert request('/note-summaries/review', lost_payload, json_body=True)[0] == 200, 'review lost-ticket note RC'
+status, _, lost_url = request('/note-summaries', lost_payload, json_body=True)
 lost_action = '/note-summaries/' + lost_url.rsplit('/', 1)[1] + '/simulate'
 status, body, _ = request(lost_action, {'_token': csrf, 'action': 'send', 'scenario': 'lost_ticket'})
 check('lost_ticket_uncertain', status == 200 and b'<strong>uncertain</strong>' in body and b'No recibido' in body)
 status, body, _ = request(lost_action, {'_token': csrf, 'action': 'recover'})
-check('no_recovery_without_ticket', status == 200 and b'<strong>uncertain</strong>' in body and b'No recibido' in body)
+lost_status, lost_body, _ = request('/receipt-notes/rc/' + lost_url.rsplit('/', 1)[1])
+check('no_recovery_without_ticket', status == 409 and lost_status == 200 and b'<strong>uncertain</strong>' in lost_body and b'No recibido' in lost_body)
 status, body, _ = request(lost_action, {'_token': csrf, 'action': 'send'})
-check('no_uncertain_resend', status == 200 and b'<strong>uncertain</strong>' in body)
+check('no_uncertain_resend', status == 409 and b'<strong>uncertain</strong>' in request('/receipt-notes/rc/' + lost_url.rsplit('/', 1)[1])[1])
 status, _, _ = request('/storage/app/private/h5b/' + note_id + '/signed.xml')
 check('private_files_not_public', status == 404)
 report = {'scope': 'H5-B FICTICIO SIN SUNAT NI CDR OFICIAL', 'checks': checks, 'legacy_checks': 48,
