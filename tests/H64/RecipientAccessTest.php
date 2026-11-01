@@ -51,7 +51,12 @@ final class RecipientAccessTest extends VoidCase
     {
         $this->operator->forceFill(['role'=>'ADMIN'])->save();$this->login($this->operator);
         $values=['name'=>'Receptor creado por ADMIN','email'=>Str::uuid().'@example.invalid','role'=>'RECEPTOR','password'=>$this->recipientPassword,'password_confirmation'=>$this->recipientPassword];
-        $this->get('/accounts')->assertOk()->assertSee('<option>RECEPTOR</option>',false);
+        $this->get('/accounts')->assertOk()->assertSee('value="RECEPTOR"',false);
+        $weak=array_replace($values,['password'=>'weak123','password_confirmation'=>'weak123']);
+        $this->from('/accounts')->post('/accounts',$weak)->assertRedirect('/accounts')->assertSessionHasErrors('password');
+        $this->get('/accounts')->assertOk()->assertSee('value="RECEPTOR" selected',false);
+        $this->assertFalse(User::query()->where('email',$values['email'])->exists());
+        $this->assertArrayNotHasKey('password',session()->getOldInput());
         $this->post('/accounts',$values)->assertStatus(303);$r=User::query()->where('email',$values['email'])->sole();
         $this->assertSame('RECEPTOR',$r->role);$this->assertTrue(\Illuminate\Support\Facades\Hash::check($this->recipientPassword,$r->password));$this->assertNotSame($this->recipientPassword,$r->password);
         $this->operator->forceFill(['role'=>'OPERADOR'])->save();$this->post('/accounts',$values)->assertForbidden();
