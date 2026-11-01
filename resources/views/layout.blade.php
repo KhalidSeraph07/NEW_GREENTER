@@ -15,11 +15,14 @@
         .totals{font-variant-numeric:tabular-nums}small{display:block;color:#526373}pre{white-space:pre-wrap;overflow-wrap:anywhere}
         @media(max-width:600px){main{margin:0;padding:16px;border-radius:0}table{font-size:14px}nav{flex-wrap:wrap}}
     </style>
+    @yield('head')
 </head>
 <body><main>
     <p class="notice"><strong>@yield('milestone', 'H2') · Simulación local · Sin validez fiscal.</strong> No se envía a SUNAT.</p>
     @auth
-    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a><a href="{{ route('boletas.index') }}">Boletas / RC ficticios</a><a href="{{ route('notes.index') }}">Notas de factura ficticias</a><a href="{{ route('receipt-notes.index') }}">Notas de boleta / RC ficticios</a><a href="{{ route('voids.index') }}">Bajas ficticias</a><a href="{{ route('settings') }}">Configuración ficticia</a>@if(auth()->user()->role === 'ADMIN')<a href="{{ route('accounts.index') }}">Cuentas</a>@endif</nav>
+    @if(in_array(auth()->user()->role, ['ADMIN','OPERADOR'], true))
+    <nav><a href="{{ route('invoices.index') }}">Historial</a><a href="{{ route('invoices.create') }}">Nueva factura ficticia</a><a href="{{ route('boletas.index') }}">Boletas / RC ficticios</a><a href="{{ route('notes.index') }}">Notas de factura ficticias</a><a href="{{ route('receipt-notes.index') }}">Notas de boleta / RC ficticios</a><a href="{{ route('voids.index') }}">Bajas ficticias</a><a href="{{ route('recipient-access.index') }}">Accesos de receptor</a><a href="{{ route('settings') }}">Configuración ficticia</a>@if(auth()->user()->role === 'ADMIN')<a href="{{ route('accounts.index') }}">Cuentas</a>@endif</nav>
+    @elseif(auth()->user()->role === 'RECEPTOR')<nav><a href="{{ route('recipient.index') }}">Mis comprobantes</a></nav>@endif
     <form method="post" action="{{ route('logout') }}">@csrf<button>Cerrar sesión</button></form>
     @endauth
     @if ($errors->any())

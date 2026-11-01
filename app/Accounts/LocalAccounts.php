@@ -19,7 +19,7 @@ final class LocalAccounts
             $input['email'] = is_string($email) ? strtolower(trim($email)) : $email;
             $v = Validator::make($input, [
                 'name' => 'required|string|max:120', 'email' => 'required|email:rfc|max:254|unique:users,email',
-                'role' => 'required|in:ADMIN,OPERADOR',
+                'role' => 'required|in:ADMIN,OPERADOR,RECEPTOR',
                 'password' => ['required', 'string', 'confirmed', Password::min(16)->letters()->mixedCase()->numbers(),
                     function ($attribute, $value, $fail) { if (is_string($value) && strlen($value) > 72) { $fail('Máximo 72 bytes de contraseña.'); } }],
             ])->after(function ($validator) use ($input) {

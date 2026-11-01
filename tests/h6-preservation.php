@@ -12,14 +12,14 @@ if (!app()->environment('local') || config('database.connections.pgsql.host') !=
     throw new RuntimeException('Preservacion solo Compose ficticio.');
 }
 $scope = $argv[2] ?? 'h6-1';
-if (!in_array($scope, ['h6-1','h6-2a','h6-2b','h6-2b-notes','h6-3a'], true)) { throw new RuntimeException('Ámbito de preservación no permitido.'); }
+if (!in_array($scope, ['h6-1','h6-2a','h6-2b','h6-2b-notes','h6-3a','h6-4'], true)) { throw new RuntimeException('Ámbito de preservación no permitido.'); }
 $snapshot = ['rows' => [], 'files' => []];
 foreach (['emisor_h1', 'emisor_h2_test'] as $database) {
     config(['database.connections.pgsql.database' => $database]);
     Illuminate\Support\Facades\DB::purge('pgsql');
     foreach (['users', 'invoices', 'invoice_outbox', 'simulation_receipts', 'invoice_transport_events',
         'h4_boletas', 'h4_summaries', 'h4_members', 'h4_outbox', 'h4_simulation_receipts', 'h4_events',
-        'h5_notes', 'h5_outbox', 'h5_receipts', 'h5_events', 'h5b_notes', 'h5b_summaries', 'h5b_members', 'h5b_outbox', 'h5b_simulation_receipts', 'h5b_events', 'h5c1_grants', 'h5c1_batches', 'h5c1_members', 'h5c1_outbox', 'h5c1_simulation_receipts', 'h5c1_events', 'h5c2_h4_corrections', 'h5c2_h5b_corrections', 'h5c2_void_corrections', 'h5c2_invoice_reissues'] as $table) {
+        'h5_notes', 'h5_outbox', 'h5_receipts', 'h5_events', 'h5b_notes', 'h5b_summaries', 'h5b_members', 'h5b_outbox', 'h5b_simulation_receipts', 'h5b_events', 'h5c1_grants', 'h5c1_batches', 'h5c1_members', 'h5c1_outbox', 'h5c1_simulation_receipts', 'h5c1_events', 'h5c2_h4_corrections', 'h5c2_h5b_corrections', 'h5c2_void_corrections', 'h5c2_invoice_reissues', 'recipient_document_access'] as $table) {
         if (!Illuminate\Support\Facades\Schema::hasTable($table)) { continue; }
         foreach (Illuminate\Support\Facades\DB::table($table)->get() as $row) {
             // H6 añade columnas; los atributos históricos de las cuentas deben seguir intactos.
@@ -42,7 +42,7 @@ if (($argv[1] ?? '') === 'after') {
         if (!is_file($filePath)) { throw new RuntimeException('Evidencia previa ausente: '.$relative); }
         $snapshot['files'][$relative] = hash_file('sha256', $filePath);
     }
-} else foreach (['app', 'framework/testing/h2', 'framework/testing/h4', 'framework/testing/h5', 'audit/h2', 'audit/h3', 'audit/h4', 'audit/h4-d07', 'audit/h5-preparacion-20261026', 'audit/h5a', 'framework/testing/h5b', 'audit/h5b', 'audit/h5c-preparacion', 'framework/testing/h5c1', 'audit/h5c1', 'audit/h5c-preparacion', 'audit/h6-1'] as $directory) {
+} else foreach (['app', 'framework/testing/h2', 'framework/testing/h4', 'framework/testing/h5', 'audit/h2', 'audit/h3', 'audit/h4', 'audit/h4-d07', 'audit/h5-preparacion-20261026', 'audit/h5a', 'framework/testing/h5b', 'audit/h5b', 'audit/h5c-preparacion', 'framework/testing/h5c1', 'audit/h5c1', 'audit/h5c-preparacion', 'audit/h6-1', 'audit/h6-3-definicion'] as $directory) {
     $root = storage_path($directory);
     if (!is_dir($root)) { continue; }
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)) as $file) {
@@ -59,8 +59,8 @@ if (($argv[1] ?? '') === 'before' && is_file(storage_path('audit/h5c2/preservati
     }
 }
 $directory = storage_path('audit/'.$scope);
-if (($argv[1] ?? '') === 'before' && in_array($scope, ['h6-2b','h6-2b-notes','h6-3a'], true)) {
-    $previous = match ($scope) { 'h6-2b'=>'h6-2a', 'h6-2b-notes'=>'h6-2b', 'h6-3a'=>'h6-2b-notes' };
+if (($argv[1] ?? '') === 'before' && in_array($scope, ['h6-2b','h6-2b-notes','h6-3a','h6-4'], true)) {
+    $previous = match ($scope) { 'h6-2b'=>'h6-2a', 'h6-2b-notes'=>'h6-2b', 'h6-3a'=>'h6-2b-notes', 'h6-4'=>'h6-3a' };
     $prior = json_decode(file_get_contents(storage_path('audit/'.$previous.'/preservation-before.json')), true, flags: JSON_THROW_ON_ERROR);
     foreach ($prior['files'] as $relative => $hash) {
         if (!is_file(storage_path($relative)) || hash_file('sha256', storage_path($relative)) !== $hash) { throw new RuntimeException('Evidencia H6-2A protegida alterada.'); }

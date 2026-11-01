@@ -7,8 +7,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [\App\Http\Controllers\SessionController::class, 'create'])->name('login');
 Route::post('/login', [\App\Http\Controllers\SessionController::class, 'store'])->name('login.store');
 
+Route::post('/logout', [\App\Http\Controllers\SessionController::class, 'destroy'])->middleware('auth')->name('logout');
+Route::middleware('h2.operator:RECEPTOR')->group(function () {
+    Route::get('/recipient', [\App\Http\Controllers\RecipientController::class, 'index'])->name('recipient.index');
+    Route::get('/recipient/{id}', [\App\Http\Controllers\RecipientController::class, 'show'])->name('recipient.show');
+    Route::get('/recipient/{id}/print', [\App\Http\Controllers\RecipientController::class, 'print'])->name('recipient.print');
+    Route::get('/recipient/{id}/evidence/{file}', [\App\Http\Controllers\RecipientController::class, 'download'])->name('recipient.download');
+});
+
 Route::middleware('h2.operator')->group(function () {
-    Route::post('/logout', [\App\Http\Controllers\SessionController::class, 'destroy'])->name('logout');
+    Route::get('/recipient-access', [\App\Http\Controllers\RecipientAccessController::class, 'index'])->name('recipient-access.index');
+    Route::post('/recipient-access', [\App\Http\Controllers\RecipientAccessController::class, 'store'])->name('recipient-access.store');
+    Route::post('/recipient-access/{id}/revoke', [\App\Http\Controllers\RecipientAccessController::class, 'revoke'])->name('recipient-access.revoke');
     Route::view('/settings', 'settings')->name('settings');
     Route::middleware('h2.operator:ADMIN')->group(function () {
         Route::get('/accounts', [\App\Http\Controllers\AccountController::class, 'index'])->name('accounts.index');
