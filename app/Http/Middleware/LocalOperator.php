@@ -12,7 +12,9 @@ final class LocalOperator
     {
         // Leer el estado actual incluso con una sesión anterior a la desactivación.
         $user = $request->user()?->fresh();
-        if (!$user || !$user->is_active || !in_array($user->role, User::ROLES, true)) {
+        if (!$user || !$user->is_active || !in_array($user->role, User::ROLES, true)
+            || !is_int($user->credential_version) || !is_int($request->session()->get('credential_version'))
+            || $request->session()->get('credential_version') !== (int) $user->credential_version) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

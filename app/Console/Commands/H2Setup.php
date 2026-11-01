@@ -40,7 +40,10 @@ final class H2Setup extends Command
                 throw new RuntimeException('Preparar APP_KEY y H2_OPERATOR_PASSWORD locales antes de habilitar HTTP.');
             }
             $user = User::query()->where('email', config('h2.operator_email'))->first();
-            if ($user && !Hash::check($password, $user->password)) {
+            $credentialMatches = !$user || ((int)$user->credential_version===0
+                ? Hash::check($password,$user->password)
+                : app(\App\Accounts\LocalAccounts::class)->hasRecordedRecovery($user));
+            if (!$credentialMatches) {
                 throw new RuntimeException('El operador existente no coincide; no se modifica su contraseña.');
             }
             if (!$user) {
