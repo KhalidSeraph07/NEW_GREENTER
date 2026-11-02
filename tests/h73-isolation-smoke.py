@@ -219,9 +219,11 @@ def exercise(args):
     save(target/'preservation-before.json', original)
     def original_containers():
         found = run(['docker','ps','-aq','--filter','label=com.docker.compose.project=emisor-h1']).split()
-        return sorted([{'Id':c['Id'], 'Mounts':c['Mounts'], 'State':{k:c['State'][k] for k in ['Running','StartedAt','FinishedAt','Pid','ExitCode']}}
+        # Docker no garantiza el orden de Mounts; conservar todos sus campos, ordenados por destino.
+        return sorted([{'Id':c['Id'], 'Mounts':sorted(c['Mounts'], key=lambda m:m['Destination']), 'State':{k:c['State'][k] for k in ['Running','StartedAt','FinishedAt','Pid','ExitCode']}}
                        for c in json.loads(run(['docker','inspect',*found]))], key=lambda c:c['Id']) if found else []
     source_containers = original_containers()
+    save(target/'source-containers-before.json', source_containers)
     assert (ROOT/'vendor/autoload.php').is_file(), 'Reutilizar dependencias aprobadas antes del ensayo'
     installs = []; token = secrets.token_hex(5)
     for n, tag in enumerate(['a', 'b']):
@@ -349,7 +351,10 @@ def exercise(args):
         check(i['tag']+'_all_rows_sequences_and_evidence_preserved', current == snapshots[n])
     check('original_files_and_links_preserved', source_files(images['php'], original)['preserved'])
     check('original_environment_preserved', (fingerprint(ROOT/'.env') if (ROOT/'.env').exists() else None) == original_env)
-    check('original_containers_untouched', original_containers() == source_containers)
+    current_containers = original_containers(); save(target/'source-containers-after.json', current_containers)
+    if current_containers != source_containers:
+        print(json.dumps({'container_difference':{'before':source_containers,'after':current_containers}}))
+    check('original_containers_untouched', current_containers == source_containers)
     check('shared_image_tags_not_rebuilt', all(json.loads(run(['docker','image','inspect','emisor-h1-'+name+':local']))[0]['Id'] == image for name,image in images.items()))
     if not args.keep_running:
         for i in installs: compose(i, 'stop')

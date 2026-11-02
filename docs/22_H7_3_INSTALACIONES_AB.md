@@ -28,6 +28,8 @@ El ensayo utiliza procesos HTTP independientes con sesiones separadas. Comprueba
 
 La preservación local compara directamente cada archivo del baseline nuevo del checkout y el estado de sus contenedores originales; no sobrescribe baselines anteriores ni arranca la instalación original. CI añade el ensayo después de la regresión H1–H7-2 y repite el control de preservación existente.
 
+Incidencias de preparación conservadas: lectura Windows de una fixture y permisos de caché (inspección sin red mediante montaje solo lectura); opción `--no-build` no disponible en `compose run`; punto de montaje `vendor` inicialmente ausente; comprobación del aviso ficticio sensible a mayúsculas. El primer CI detectó esa aserción y el siguiente, un orden variable de `Mounts` en Docker, reproducido con 12 consultas y dos ordenaciones. La comparación ahora ordena por destino y conserva todos los campos, IDs y estados, sin ignorar montajes o permisos. No se corrigieron motores ni datos históricos.
+
 ## Límites y puertas conservadas
 
 Solo separación funcional local, sin protección ante administrador del host, acceso privilegiado a Docker o pérdida física del servidor. HTTPS, firewall, endurecimiento, exposición externa y actualización independiente requieren decisiones posteriores. H7-2 sigue experimental: 64 MiB, separación solo local, sin respaldo externo real ni custodia comercial de claves demostrada; destino restaurado solo consulta.
