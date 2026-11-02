@@ -21,8 +21,14 @@ final class SessionController
             RateLimiter::hit($key, 60); RateLimiter::hit($ipKey, 60);
             throw ValidationException::withMessages(['email'=>'Credenciales inválidas o cuenta no disponible.']);
         }
+        if (!is_int($request->user()->credential_version)) {
+            Auth::logout();$request->session()->invalidate();$request->session()->regenerateToken();
+            throw ValidationException::withMessages(['email'=>'La instalación requiere la migración autorizada antes de iniciar sesión.']);
+        }
         RateLimiter::clear($key);
         $request->session()->regenerate();
+        // Usar la misma instantánea cuya contraseña verificó Auth; no adoptar una versión recuperada durante el login.
+        $request->session()->put('credential_version', (int) $request->user()->credential_version);
         return redirect()->route($request->user()->role === 'RECEPTOR' ? 'recipient.index' : 'invoices.index');
     }
     public function destroy(Request $request)
