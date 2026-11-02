@@ -21,5 +21,7 @@
 *.p12
 *.pfx
 *.dump
+*.cms
+__pycache__/
 *.sql.gz
 .DS_Store

@@ -10,6 +10,18 @@ use App\Http\Middleware\LocalOperator;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
 
+// Una restauración incompleta no puede arrancar HTTP ni comandos que cambien operaciones.
+$recoveryGate = __DIR__.'/../storage/framework/h72-state.json';
+if (file_exists($recoveryGate)) {
+    $recoveryState = json_decode((string) file_get_contents($recoveryGate), true);
+    if (($recoveryState['status'] ?? null) !== 'verified'
+        || (PHP_SAPI === 'cli' && ($_SERVER['argv'][1] ?? null) !== 'serve')) {
+        if (PHP_SAPI === 'cli') { fwrite(STDERR, "Instalación H7-2 bloqueada; requiere conciliación supervisada.\n"); exit(1); }
+        \App\Http\Middleware\LocalEnvironment::secure(new \Symfony\Component\HttpFoundation\Response('Restauración no verificada.', 503))->send();
+        exit;
+    }
+}
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([\App\Console\Commands\BootstrapLocalAdmin::class, InvoicePoc::class, H2Setup::class, H2Dispatch::class, H3Recover::class, H3Inspect::class, H4Process::class, \App\Console\Commands\H5Process::class, \App\Console\Commands\H5C1Process::class, \App\Console\Commands\H5C2Process::class])
     ->withRouting(web: __DIR__.'/../routes/web.php')

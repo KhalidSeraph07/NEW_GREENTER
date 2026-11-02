@@ -11,6 +11,10 @@ final class LocalEnvironment
     {
         abort_unless(app()->environment(['local', 'testing']), 503, 'Solo ensayo local ficticio.');
         abort_unless(in_array($request->getHost(), ['127.0.0.1', 'localhost'], true), 400, 'Host local no permitido.');
+        if (is_file(storage_path('framework/h72-state.json'))) {
+            abort_unless($request->isMethodSafe() || in_array($request->path(), ['login', 'logout'], true),
+                423, 'Restauración H7-2 solo consulta; transporte y escrituras bloqueados.');
+        }
         return self::secure($next($request));
     }
     public static function secure(Response $response): Response
