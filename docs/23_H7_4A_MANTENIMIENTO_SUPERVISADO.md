@@ -1,6 +1,6 @@
 # H7-4A — operación y mantenimiento supervisados, ficticios/locales
 
-Autorizado sobre `0f89bed813579695da8cf722b393e16e672e0eeb`. Entrega pendiente de revisión en PR Draft, sin fusión ni cierre automático. H7 global abierto; H7-4B/C, H8 e infraestructura/identidades/comunicaciones fiscales reales no autorizados.
+**Cerrado con observaciones — 02/11/2026**, exclusivamente ficticio/local, cumplidas las condiciones de aprobación sobre `1f79aaed08452e2073153fad0e4627b2a90fc14e` del [PR #16](https://github.com/KhalidSeraph07/NEW_GREENTER/pull/16), base `0f89bed813579695da8cf722b393e16e672e0eeb`. HEAD exacto, ambos CI exitosos y ausencia de bloqueos comprobados; marcado Ready y fusionado mediante merge commit `6fb53f2e22d91c28f13736cd1a9cf3bff968e2c8`, sin squash ni rebase y con árbol idéntico. [CI posterior `41519679360`](https://github.com/KhalidSeraph07/NEW_GREENTER/actions/runs/41519679360) exitoso: 496 pruebas/4.308 aserciones, H1 26, HTTP 216, H7-2 43 y H7-3 39, con tres controles de preservación. **Los 22 controles H7-4A se demostraron localmente y no forman parte del workflow actual.** Se conservan procedimiento, evidencia, observaciones, responsables y puertas siguientes; no se ejecutaron nuevas pruebas locales ni cambios funcionales/de datos durante el cierre. H7 global y H8 abiertos; únicamente propuesta mínima H7-4B, sin implementación. H7-4B/C e infraestructura/identidades/certificados/credenciales/comunicaciones fiscales reales no autorizados.
 
 ## Capacidades existentes y límites
 
