@@ -106,7 +106,7 @@ def worker(v):
             'description':'PRODUCTO FICTICIO H73 '+v['tag'], 'quantity':'1', 'unit_price':v['price']}
         assert http(opener, base, '/invoices/review', fields)[0] == 200
         status, body, path = http(opener, base, '/invoices', fields)
-        assert status == 200 and path.startswith('/invoices/') and 'SIN' in body.decode()
+        assert status == 200 and path.startswith('/invoices/') and 'sin validez fiscal' in body.decode().lower()
         assert http(opener, base, '/invoices', fields)[2] == path, 'Confirmación no idempotente'
         status, xml, _ = http(opener, base, path+'/evidence/xml')
         assert status == 200 and ('PRODUCTO FICTICIO H73 '+v['tag']).encode() in xml
